@@ -1,0 +1,100 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Coca Cola",
+      "category": "Drink",
+      "price": 12000,
+      "quantity": 50,
+      "image": "https://picsum.photos/100?random=1"
+    },
+    {
+      "id": 2,
+      "name": "Pepsi",
+      "category": "Drink",
+      "price": 11000,
+      "quantity": 30,
+      "image": "https://picsum.photos/100?random=2"
+    },
+    {
+      "id": 3,
+      "name": "Sprite",
+      "category": "Drink",
+      "price": 10000,
+      "quantity": 25,
+      "image": "https://picsum.photos/100?random=3"
+    },
+    {
+      "id": 4,
+      "name": "Oreo",
+      "category": "Snack",
+      "price": 25000,
+      "quantity": 20,
+      "image": "https://picsum.photos/100?random=4"
+    },
+    {
+      "id": 5,
+      "name": "Lay's Classic",
+      "category": "Snack",
+      "price": 18000,
+      "quantity": 35,
+      "image": "https://picsum.photos/100?random=5"
+    },
+    {
+      "id": 6,
+      "name": "KitKat",
+      "category": "Snack",
+      "price": 15000,
+      "quantity": 40,
+      "image": "https://picsum.photos/100?random=6"
+    },
+    {
+      "id": 7,
+      "name": "Vinamilk Fresh Milk",
+      "category": "Dairy",
+      "price": 32000,
+      "quantity": 28,
+      "image": "https://picsum.photos/100?random=7"
+    },
+    {
+      "id": 8,
+      "name": "TH True Milk",
+      "category": "Dairy",
+      "price": 34000,
+      "quantity": 22,
+      "image": "https://picsum.photos/100?random=8"
+    },
+    {
+      "id": 9,
+      "name": "Instant Noodles",
+      "category": "Food",
+      "price": 6000,
+      "quantity": 100,
+      "image": "https://picsum.photos/100?random=9"
+    },
+    {
+      "id": 10,
+      "name": "Rice 5kg",
+      "category": "Food",
+      "price": 135000,
+      "quantity": 15,
+      "image": "https://picsum.photos/100?random=10"
+    },
+    {
+      "id": 11,
+      "name": "Cooking Oil",
+      "category": "Food",
+      "price": 48000,
+      "quantity": 18,
+      "image": "https://picsum.photos/100?random=11"
+    },
+    {
+      "id": 12,
+      "name": "Mineral Water",
+      "category": "Drink",
+      "price": 7000,
+      "quantity": 80,
+      "image": "https://picsum.photos/100?random=12"
+    }
+  ]
+}
