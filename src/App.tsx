@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import MainLayout from "./layouts/MainLayout";
 
+import Welcome from "./pages/Welcome";
 import Home from "./pages/Home";
 import AddProduct from "./pages/AddProduct";
 import EditProduct from "./pages/EditProduct";
@@ -16,16 +17,21 @@ function App() {
                 >
                     <Route
                         index
+                        element={<Welcome />}
+                    />
+
+                    <Route
+                        path="products"
                         element={<Home />}
                     />
 
                     <Route
-                        path="add"
+                        path="products/add"
                         element={<AddProduct />}
                     />
 
                     <Route
-                        path="edit/:id"
+                        path="products/edit/:id"
                         element={<EditProduct />}
                     />
                 </Route>
