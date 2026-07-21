@@ -11,6 +11,8 @@ import EditProduct from "./pages/EditProduct";
 import Employees from "./pages/Employees";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Sales from "./pages/Sales";
+import Invoice from "./pages/Invoice";
 
 function App() {
     return (
@@ -69,6 +71,24 @@ function App() {
                             element={
                                 <ProtectedRoute>
                                     <Employees />
+                                </ProtectedRoute>
+                            }
+                        />
+
+                        <Route
+                            path="sales"
+                            element={
+                                <ProtectedRoute>
+                                    <Sales />
+                                </ProtectedRoute>
+                            }
+                        />
+
+                        <Route
+                            path="invoice"
+                            element={
+                                <ProtectedRoute>
+                                    <Invoice />
                                 </ProtectedRoute>
                             }
                         />
