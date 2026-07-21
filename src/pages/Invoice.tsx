@@ -1,9 +1,8 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import type { OrderItem } from "../types/OrderItem";
+import type { Order } from "../types/Order";
 
 interface InvoiceState {
-    items: OrderItem[];
-    total: number;
+    order: Order;
 }
 
 const Invoice = () => {
@@ -15,19 +14,7 @@ const Invoice = () => {
         return new Intl.NumberFormat("vi-VN").format(price) + "đ";
     };
 
-    const now = new Date();
-    const formattedDate = now.toLocaleDateString("vi-VN", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-    });
-    const formattedTime = now.toLocaleTimeString("vi-VN", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-    });
-
-    if (!state || !state.items || state.items.length === 0) {
+    if (!state || !state.order) {
         return (
             <div className="container">
                 <div className="invoice-empty">
@@ -54,6 +41,19 @@ const Invoice = () => {
             </div>
         );
     }
+
+    const { order } = state;
+    const orderDate = new Date(order.createdAt);
+    const formattedDate = orderDate.toLocaleDateString("vi-VN", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+    });
+    const formattedTime = orderDate.toLocaleTimeString("vi-VN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+    });
 
     const handlePrint = () => {
         window.print();
@@ -98,9 +98,13 @@ const Invoice = () => {
                     <p className="invoice-phone">Hotline: 0123 456 789</p>
                     <div className="invoice-divider" />
                     <h2 className="invoice-title">HOÁ ĐƠN BÁN HÀNG</h2>
-                    <div className="invoice-meta">
-                        <span>Ngày: {formattedDate}</span>
-                        <span>Giờ: {formattedTime}</span>
+                    <div className="invoice-meta" style={{ display: "flex", flexDirection: "column", gap: "4px", alignItems: "center" }}>
+                        <div style={{ fontWeight: 600, color: "#333" }}>Mã HĐ: #{order.id}</div>
+                        <div className="invoice-meta-row" style={{ display: "flex", gap: "24px", fontSize: "0.85rem", color: "#666" }}>
+                            <span>Ngày: {formattedDate}</span>
+                            <span>Giờ: {formattedTime}</span>
+                        </div>
+                        <div style={{ fontSize: "0.85rem", color: "#666" }}>Nhân viên: {order.employeeName}</div>
                     </div>
                 </div>
 
@@ -115,7 +119,7 @@ const Invoice = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {state.items.map((item, index) => (
+                        {order.items.map((item, index) => (
                             <tr key={item.productId}>
                                 <td>{index + 1}</td>
                                 <td>{item.name}</td>
@@ -128,9 +132,9 @@ const Invoice = () => {
                     <tfoot>
                         <tr className="invoice-total-row">
                             <td colSpan={3} />
-                            <td className="text-center"><strong>Tổng</strong></td>
+                            <td className="text-center"><strong>Tổng cộng</strong></td>
                             <td className="text-right">
-                                <strong>{formatPrice(state.total)}</strong>
+                                <strong>{formatPrice(order.total)}</strong>
                             </td>
                         </tr>
                     </tfoot>

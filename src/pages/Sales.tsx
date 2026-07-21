@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getProducts } from "../services/productService";
+import { getProducts, updateProduct } from "../services/productService";
+import { createOrder } from "../services/orderService";
+import { useAuth } from "../context/AuthContext";
 import type { Product } from "../types/Product";
 import type { OrderItem } from "../types/OrderItem";
 
 const Sales = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [products, setProducts] = useState<Product[]>([]);
     const [cart, setCart] = useState<OrderItem[]>([]);
     const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -88,8 +92,49 @@ const Sales = () => {
         return new Intl.NumberFormat("vi-VN").format(price) + "đ";
     };
 
-    const handlePrintInvoice = () => {
-        navigate("/invoice", { state: { items: cart, total: totalAmount } });
+    const handlePrintInvoice = async () => {
+        if (cart.length === 0) return;
+        if (!user) {
+            alert("Vui lòng đăng nhập để thực hiện giao dịch.");
+            return;
+        }
+
+        setSubmitting(true);
+        try {
+            // 1. Tạo đối tượng Order
+            const newOrder = {
+                items: cart,
+                total: totalAmount,
+                createdAt: new Date().toISOString(),
+                employeeId: String(user.id) || "unknown",
+                employeeName: user.name || "Nhân viên",
+            };
+
+            // 2. Lưu vào database bảng orders
+            const savedOrder = await createOrder(newOrder);
+
+            // 3. Cập nhật tồn kho sản phẩm trong database
+            await Promise.all(
+                cart.map(async (item) => {
+                    const product = products.find((p) => p.id === item.productId);
+                    if (product) {
+                        const updatedProduct = {
+                            ...product,
+                            quantity: product.quantity - item.quantity,
+                        };
+                        await updateProduct(product.id, updatedProduct);
+                    }
+                })
+            );
+
+            // 4. Chuyển sang trang hóa đơn với dữ liệu đã lưu
+            navigate("/invoice", { state: { order: savedOrder } });
+        } catch (error) {
+            console.error("Lỗi khi xử lý thanh toán:", error);
+            alert("Có lỗi xảy ra khi tạo hóa đơn và cập nhật kho hàng. Vui lòng thử lại.");
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     const getStockForCartItem = (productId: number) => {
@@ -274,13 +319,23 @@ const Sales = () => {
                                 <button
                                     className="btn btn-success sales-print-btn"
                                     onClick={handlePrintInvoice}
+                                    disabled={submitting}
                                 >
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <polyline points="6 9 6 2 18 2 18 9" />
-                                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-                                        <rect width="12" height="8" x="6" y="14" />
-                                    </svg>
-                                    In Hoá Đơn
+                                    {submitting ? (
+                                        <>
+                                            <div className="sales-spinner" style={{ width: 16, height: 16, borderWidth: 2, marginRight: 8, display: "inline-block" }} />
+                                            Đang xử lý...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <polyline points="6 9 6 2 18 2 18 9" />
+                                                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                                                <rect width="12" height="8" x="6" y="14" />
+                                            </svg>
+                                            In Hoá Đơn
+                                        </>
+                                    )}
                                 </button>
                             </div>
                         </div>
