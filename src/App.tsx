@@ -14,6 +14,8 @@ import Register from "./pages/Register";
 import Sales from "./pages/Sales";
 import Invoice from "./pages/Invoice";
 
+import SalesHistory from "./pages/SalesHistory";
+
 function App() {
     return (
         <AuthProvider>
@@ -89,6 +91,15 @@ function App() {
                             element={
                                 <ProtectedRoute>
                                     <Invoice />
+                                </ProtectedRoute>
+                            }
+                        />
+
+                        <Route
+                            path="sales-history"
+                            element={
+                                <ProtectedRoute>
+                                    <SalesHistory />
                                 </ProtectedRoute>
                             }
                         />

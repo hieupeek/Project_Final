@@ -2,7 +2,8 @@ export interface Product {
   id: number;
   name: string;
   category: string;
-  price: number;
+  price: number;       // Giá bán
+  costPrice?: number;  // Giá vốn
   quantity: number;
   image: string;
 }

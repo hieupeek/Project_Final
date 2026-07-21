@@ -5,6 +5,7 @@
       "name": "Coca Cola",
       "category": "Drink",
       "price": 12000,
+      "costPrice": 8000,
       "quantity": 50,
       "image": "https://picsum.photos/100?random=1"
     },
@@ -13,6 +14,7 @@
       "name": "Pepsi",
       "category": "Drink",
       "price": 11000,
+      "costPrice": 7500,
       "quantity": 30,
       "image": "https://picsum.photos/100?random=2"
     },
@@ -21,6 +23,7 @@
       "name": "Sprite",
       "category": "Drink",
       "price": 10000,
+      "costPrice": 6500,
       "quantity": 25,
       "image": "https://picsum.photos/100?random=3"
     },
@@ -29,6 +32,7 @@
       "name": "Oreo",
       "category": "Snack",
       "price": 25000,
+      "costPrice": 16000,
       "quantity": 20,
       "image": "https://picsum.photos/100?random=4"
     },
@@ -37,6 +41,7 @@
       "name": "Lay's Classic",
       "category": "Snack",
       "price": 18000,
+      "costPrice": 12000,
       "quantity": 35,
       "image": "https://picsum.photos/100?random=5"
     },
@@ -45,6 +50,7 @@
       "name": "KitKat",
       "category": "Snack",
       "price": 15000,
+      "costPrice": 10000,
       "quantity": 40,
       "image": "https://picsum.photos/100?random=6"
     },
@@ -53,6 +59,7 @@
       "name": "Vinamilk Fresh Milk",
       "category": "Dairy",
       "price": 32000,
+      "costPrice": 24000,
       "quantity": 28,
       "image": "https://picsum.photos/100?random=7"
     },
@@ -61,6 +68,7 @@
       "name": "TH True Milk",
       "category": "Dairy",
       "price": 34000,
+      "costPrice": 25000,
       "quantity": 22,
       "image": "https://picsum.photos/100?random=8"
     },
@@ -69,6 +77,7 @@
       "name": "Instant Noodles",
       "category": "Food",
       "price": 6000,
+      "costPrice": 4000,
       "quantity": 100,
       "image": "https://picsum.photos/100?random=9"
     },
@@ -77,6 +86,7 @@
       "name": "Rice 5kg",
       "category": "Food",
       "price": 135000,
+      "costPrice": 105000,
       "quantity": 15,
       "image": "https://picsum.photos/100?random=10"
     },
@@ -85,6 +95,7 @@
       "name": "Cooking Oil",
       "category": "Food",
       "price": 48000,
+      "costPrice": 36000,
       "quantity": 18,
       "image": "https://picsum.photos/100?random=11"
     },
@@ -93,6 +104,7 @@
       "name": "Mineral Water",
       "category": "Drink",
       "price": 7000,
+      "costPrice": 4500,
       "quantity": 80,
       "image": "https://picsum.photos/100?random=12"
     }
@@ -162,5 +174,68 @@
       "status": "active"
     }
   ],
-  "orders": []
+  "orders": [
+    {
+      "id": "ORD-1001",
+      "items": [
+        {
+          "productId": 1,
+          "name": "Coca Cola",
+          "price": 12000,
+          "costPrice": 8000,
+          "quantity": 5,
+          "subtotal": 60000,
+          "costSubtotal": 40000,
+          "profit": 20000
+        },
+        {
+          "productId": 4,
+          "name": "Oreo",
+          "price": 25000,
+          "costPrice": 16000,
+          "quantity": 2,
+          "subtotal": 50000,
+          "costSubtotal": 32000,
+          "profit": 18000
+        }
+      ],
+      "total": 110000,
+      "totalCost": 72000,
+      "totalProfit": 38000,
+      "createdAt": "2026-07-20T14:30:00.000Z",
+      "employeeId": "1",
+      "employeeName": "Nguyễn Hoàng Nam (Admin)"
+    },
+    {
+      "id": "ORD-1002",
+      "items": [
+        {
+          "productId": 10,
+          "name": "Rice 5kg",
+          "price": 135000,
+          "costPrice": 105000,
+          "quantity": 1,
+          "subtotal": 135000,
+          "costSubtotal": 105000,
+          "profit": 30000
+        },
+        {
+          "productId": 7,
+          "name": "Vinamilk Fresh Milk",
+          "price": 32000,
+          "costPrice": 24000,
+          "quantity": 2,
+          "subtotal": 64000,
+          "costSubtotal": 48000,
+          "profit": 16000
+        }
+      ],
+      "total": 199000,
+      "totalCost": 153000,
+      "totalProfit": 46000,
+      "createdAt": "2026-07-21T08:15:00.000Z",
+      "employeeId": "2",
+      "employeeName": "Vũ Hoàng Nam (Nhân viên)"
+    }
+  ]
 }

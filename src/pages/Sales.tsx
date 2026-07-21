@@ -34,30 +34,40 @@ const Sales = () => {
     );
 
     const addToCart = (product: Product) => {
+        const costPrice = product.costPrice ?? Math.round(product.price * 0.65);
         setCart((prev) => {
             const existing = prev.find((item) => item.productId === product.id);
             if (existing) {
-                // Kiểm tra tồn kho
                 if (existing.quantity >= product.quantity) return prev;
+                const newQty = existing.quantity + 1;
+                const subtotal = product.price * newQty;
+                const costSubtotal = costPrice * newQty;
                 return prev.map((item) =>
                     item.productId === product.id
                         ? {
                               ...item,
-                              quantity: item.quantity + 1,
-                              subtotal: item.price * (item.quantity + 1),
+                              quantity: newQty,
+                              subtotal,
+                              costSubtotal,
+                              profit: subtotal - costSubtotal,
                           }
                         : item
                 );
             }
             if (product.quantity <= 0) return prev;
+            const subtotal = product.price;
+            const costSubtotal = costPrice;
             return [
                 ...prev,
                 {
                     productId: product.id,
                     name: product.name,
                     price: product.price,
+                    costPrice,
                     quantity: 1,
-                    subtotal: product.price,
+                    subtotal,
+                    costSubtotal,
+                    profit: subtotal - costSubtotal,
                 },
             ];
         });
@@ -72,10 +82,15 @@ const Sales = () => {
                     const newQty = item.quantity + delta;
                     if (newQty <= 0) return null;
                     if (product && newQty > product.quantity) return item;
+                    const costPrice = item.costPrice ?? (product?.costPrice ?? Math.round(item.price * 0.65));
+                    const subtotal = item.price * newQty;
+                    const costSubtotal = costPrice * newQty;
                     return {
                         ...item,
                         quantity: newQty,
-                        subtotal: item.price * newQty,
+                        subtotal,
+                        costSubtotal,
+                        profit: subtotal - costSubtotal,
                     };
                 })
                 .filter(Boolean) as OrderItem[];
@@ -87,6 +102,8 @@ const Sales = () => {
     };
 
     const totalAmount = cart.reduce((sum, item) => sum + item.subtotal, 0);
+    const totalCostAmount = cart.reduce((sum, item) => sum + (item.costSubtotal || 0), 0);
+    const totalProfitAmount = totalAmount - totalCostAmount;
 
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat("vi-VN").format(price) + "đ";
@@ -105,6 +122,8 @@ const Sales = () => {
             const newOrder = {
                 items: cart,
                 total: totalAmount,
+                totalCost: totalCostAmount,
+                totalProfit: totalProfitAmount,
                 createdAt: new Date().toISOString(),
                 employeeId: String(user.id) || "unknown",
                 employeeName: user.name || "Nhân viên",
