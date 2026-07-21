@@ -1,25 +1,25 @@
 {
   "products": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Coca Cola",
       "category": "Drink",
       "price": 12000,
       "costPrice": 8000,
-      "quantity": 50,
+      "quantity": 49,
       "image": "https://picsum.photos/100?random=1"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Pepsi",
       "category": "Drink",
       "price": 11000,
       "costPrice": 7500,
-      "quantity": 30,
+      "quantity": 29,
       "image": "https://picsum.photos/100?random=2"
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Sprite",
       "category": "Drink",
       "price": 10000,
@@ -28,7 +28,7 @@
       "image": "https://picsum.photos/100?random=3"
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Oreo",
       "category": "Snack",
       "price": 25000,
@@ -37,7 +37,7 @@
       "image": "https://picsum.photos/100?random=4"
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "Lay's Classic",
       "category": "Snack",
       "price": 18000,
@@ -46,7 +46,7 @@
       "image": "https://picsum.photos/100?random=5"
     },
     {
-      "id": 6,
+      "id": "6",
       "name": "KitKat",
       "category": "Snack",
       "price": 15000,
@@ -55,7 +55,7 @@
       "image": "https://picsum.photos/100?random=6"
     },
     {
-      "id": 7,
+      "id": "7",
       "name": "Vinamilk Fresh Milk",
       "category": "Dairy",
       "price": 32000,
@@ -64,7 +64,7 @@
       "image": "https://picsum.photos/100?random=7"
     },
     {
-      "id": 8,
+      "id": "8",
       "name": "TH True Milk",
       "category": "Dairy",
       "price": 34000,
@@ -73,7 +73,7 @@
       "image": "https://picsum.photos/100?random=8"
     },
     {
-      "id": 9,
+      "id": "9",
       "name": "Instant Noodles",
       "category": "Food",
       "price": 6000,
@@ -82,7 +82,7 @@
       "image": "https://picsum.photos/100?random=9"
     },
     {
-      "id": 10,
+      "id": "10",
       "name": "Rice 5kg",
       "category": "Food",
       "price": 135000,
@@ -91,7 +91,7 @@
       "image": "https://picsum.photos/100?random=10"
     },
     {
-      "id": 11,
+      "id": "11",
       "name": "Cooking Oil",
       "category": "Food",
       "price": 48000,
@@ -100,13 +100,21 @@
       "image": "https://picsum.photos/100?random=11"
     },
     {
-      "id": 12,
+      "id": "12",
       "name": "Mineral Water",
       "category": "Drink",
       "price": 7000,
       "costPrice": 4500,
       "quantity": 80,
       "image": "https://picsum.photos/100?random=12"
+    },
+    {
+      "name": "ytytytytyt",
+      "category": "drink",
+      "price": 100000,
+      "quantity": 9,
+      "image": "",
+      "id": "kvuzXIJ4Gw0"
     }
   ],
   "users": [
@@ -129,7 +137,7 @@
   ],
   "employees": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Nguyễn Văn Hùng",
       "role": "Manager",
       "email": "hung.nguyen@supermarket.com",
@@ -138,7 +146,7 @@
       "status": "active"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Trần Thị Mai",
       "role": "Cashier",
       "email": "mai.tran@supermarket.com",
@@ -147,7 +155,7 @@
       "status": "active"
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Lê Minh Tuấn",
       "role": "Stocker",
       "email": "tuan.le@supermarket.com",
@@ -156,7 +164,7 @@
       "status": "active"
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Phạm Hải Yến",
       "role": "Accountant",
       "email": "yen.pham@supermarket.com",
@@ -165,7 +173,7 @@
       "status": "active"
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "Vũ Hoàng Nam",
       "role": "Security",
       "email": "nam.vu@supermarket.com",
@@ -236,6 +244,70 @@
       "createdAt": "2026-07-21T08:15:00.000Z",
       "employeeId": "2",
       "employeeName": "Vũ Hoàng Nam (Nhân viên)"
+    },
+    {
+      "items": [
+        {
+          "productId": "1",
+          "name": "Coca Cola",
+          "price": 12000,
+          "costPrice": 8000,
+          "quantity": 1,
+          "subtotal": 12000,
+          "costSubtotal": 8000,
+          "profit": 4000
+        }
+      ],
+      "total": 12000,
+      "totalCost": 8000,
+      "totalProfit": 4000,
+      "createdAt": "2026-07-21T03:20:16.539Z",
+      "employeeId": "1",
+      "employeeName": "Nguyễn Hoàng Nam (Admin)",
+      "id": "WmEVle-b0bc"
+    },
+    {
+      "items": [
+        {
+          "productId": "2",
+          "name": "Pepsi",
+          "price": 11000,
+          "costPrice": 7500,
+          "quantity": 1,
+          "subtotal": 11000,
+          "costSubtotal": 7500,
+          "profit": 3500
+        }
+      ],
+      "total": 11000,
+      "totalCost": 7500,
+      "totalProfit": 3500,
+      "createdAt": "2026-07-21T03:20:56.283Z",
+      "employeeId": "1",
+      "employeeName": "Nguyễn Hoàng Nam (Admin)",
+      "id": "cmBP67Yg-gg"
+    },
+    {
+      "items": [
+        {
+          "productId": "kvuzXIJ4Gw0",
+          "name": "ytytytytyt",
+          "price": 100000,
+          "costPrice": 65000,
+          "quantity": 1,
+          "subtotal": 100000,
+          "costSubtotal": 65000,
+          "profit": 35000
+        }
+      ],
+      "total": 100000,
+      "totalCost": 65000,
+      "totalProfit": 35000,
+      "createdAt": "2026-07-21T03:22:47.773Z",
+      "employeeId": "1",
+      "employeeName": "Nguyễn Hoàng Nam (Admin)",
+      "id": "29A8ApQd2eo"
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }

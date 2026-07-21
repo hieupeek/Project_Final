@@ -34,7 +34,7 @@ const Sales = () => {
     );
 
     const addToCart = (product: Product) => {
-        const costPrice = product.costPrice ?? Math.round(product.price * 0.65);
+        const costPrice = product.costPrice ?? Math.round(product.price * 0.5);
         setCart((prev) => {
             const existing = prev.find((item) => item.productId === product.id);
             if (existing) {
@@ -45,12 +45,12 @@ const Sales = () => {
                 return prev.map((item) =>
                     item.productId === product.id
                         ? {
-                              ...item,
-                              quantity: newQty,
-                              subtotal,
-                              costSubtotal,
-                              profit: subtotal - costSubtotal,
-                          }
+                            ...item,
+                            quantity: newQty,
+                            subtotal,
+                            costSubtotal,
+                            profit: subtotal - costSubtotal,
+                        }
                         : item
                 );
             }
