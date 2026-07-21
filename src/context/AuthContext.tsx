@@ -1,4 +1,5 @@
-import { createContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useState, useEffect } from "react";
+import type { ReactNode } from "react";
 import type { User, LoginCredentials, RegisterData } from "../types/User";
 import { loginApi, registerApi, getCurrentUser, logoutApi } from "../services/authService";
 

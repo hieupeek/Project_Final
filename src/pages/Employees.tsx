@@ -4,8 +4,8 @@ import {
     addEmployee,
     updateEmployee,
     deleteEmployee,
-    Employee,
 } from "../services/employeeService";
+import type { Employee } from "../services/employeeService";
 import { useAuth } from "../context/AuthContext";
 
 const Employees = () => {
