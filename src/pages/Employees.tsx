@@ -1,74 +1,16 @@
-import { useState } from "react";
-
-interface Employee {
-    id: number;
-    name: string;
-    role: string;
-    email: string;
-    phone: string;
-    avatar: string;
-    status: "active" | "inactive";
-}
-
-const initialEmployees: Employee[] = [
-    {
-        id: 1,
-        name: "Nguyễn Văn Hùng",
-        role: "Manager",
-        email: "hung.nguyen@supermarket.com",
-        phone: "0901 234 567",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop",
-        status: "active",
-    },
-    {
-        id: 2,
-        name: "Trần Thị Mai",
-        role: "Cashier",
-        email: "mai.tran@supermarket.com",
-        phone: "0912 345 678",
-        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop",
-        status: "active",
-    },
-    {
-        id: 3,
-        name: "Lê Minh Tuấn",
-        role: "Stocker",
-        email: "tuan.le@supermarket.com",
-        phone: "0988 765 432",
-        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop",
-        status: "active",
-    },
-    {
-        id: 4,
-        name: "Phạm Hải Yến",
-        role: "Accountant",
-        email: "yen.pham@supermarket.com",
-        phone: "0977 111 222",
-        avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop",
-        status: "active",
-    },
-    {
-        id: 5,
-        name: "Vũ Hoàng Nam",
-        role: "Security",
-        email: "nam.vu@supermarket.com",
-        phone: "0933 444 555",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop",
-        status: "active",
-    },
-    {
-        id: 6,
-        name: "Ngô Mỹ Linh",
-        role: "Cashier",
-        email: "linh.ngo@supermarket.com",
-        phone: "0955 888 999",
-        avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop",
-        status: "inactive",
-    },
-];
+import { useState, useEffect } from "react";
+import {
+    getEmployees,
+    addEmployee,
+    updateEmployee,
+    deleteEmployee,
+    Employee,
+} from "../services/employeeService";
 
 const Employees = () => {
-    const [employees, setEmployees] = useState<Employee[]>(initialEmployees);
+    const [employees, setEmployees] = useState<Employee[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedRole, setSelectedRole] = useState("");
     const [selectedStatus, setSelectedStatus] = useState("");
@@ -78,6 +20,7 @@ const Employees = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState<"add" | "edit">("add");
     const [editingId, setEditingId] = useState<number | null>(null);
+    const [submitting, setSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
         role: "Cashier",
@@ -86,6 +29,24 @@ const Employees = () => {
         avatar: "",
         status: "active" as "active" | "inactive",
     });
+
+    const fetchEmployeesData = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const data = await getEmployees();
+            setEmployees(data);
+        } catch (err: unknown) {
+            console.error("Lỗi khi tải danh sách nhân viên:", err);
+            setError("Không thể tải danh sách nhân viên. Vui lòng kiểm tra json-server!");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchEmployeesData();
+    }, []);
 
     // Extract dynamic roles
     const roles = Array.from(new Set(employees.map((e) => e.role)));
@@ -142,7 +103,7 @@ const Employees = () => {
         });
     };
 
-    const handleFormSubmit = (e: React.FormEvent) => {
+    const handleFormSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!formData.name || !formData.email || !formData.phone) {
@@ -155,33 +116,49 @@ const Employees = () => {
             formData.avatar ||
             `https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop`;
 
-        if (modalMode === "add") {
-            const newEmployee: Employee = {
-                id: Date.now(),
-                name: formData.name,
-                role: formData.role,
-                email: formData.email,
-                phone: formData.phone,
-                avatar: finalAvatar,
-                status: formData.status,
-            };
-            setEmployees([newEmployee, ...employees]);
-        } else if (modalMode === "edit" && editingId !== null) {
-            setEmployees(
-                employees.map((emp) =>
-                    emp.id === editingId
-                        ? { ...emp, ...formData, avatar: finalAvatar }
-                        : emp
-                )
-            );
+        try {
+            setSubmitting(true);
+            if (modalMode === "add") {
+                const newEmp = await addEmployee({
+                    name: formData.name,
+                    role: formData.role,
+                    email: formData.email,
+                    phone: formData.phone,
+                    avatar: finalAvatar,
+                    status: formData.status,
+                });
+                setEmployees([newEmp, ...employees]);
+            } else if (modalMode === "edit" && editingId !== null) {
+                const updated = await updateEmployee(editingId, {
+                    name: formData.name,
+                    role: formData.role,
+                    email: formData.email,
+                    phone: formData.phone,
+                    avatar: finalAvatar,
+                    status: formData.status,
+                });
+                setEmployees(
+                    employees.map((emp) => (emp.id === editingId ? updated : emp))
+                );
+            }
+            handleCloseModal();
+        } catch (err: unknown) {
+            console.error("Lỗi khi lưu nhân viên:", err);
+            alert("Không thể lưu thông tin nhân viên. Vui lòng thử lại!");
+        } finally {
+            setSubmitting(false);
         }
-
-        handleCloseModal();
     };
 
-    const handleDeleteEmployee = (id: number, name: string) => {
+    const handleDeleteEmployee = async (id: number, name: string) => {
         if (confirm(`Bạn có chắc muốn xóa nhân viên ${name}?`)) {
-            setEmployees(employees.filter((emp) => emp.id !== id));
+            try {
+                await deleteEmployee(id);
+                setEmployees(employees.filter((emp) => emp.id !== id));
+            } catch (err: unknown) {
+                console.error("Lỗi khi xóa nhân viên:", err);
+                alert("Không thể xóa nhân viên này. Vui lòng kiểm tra lại backend!");
+            }
         }
     };
 
