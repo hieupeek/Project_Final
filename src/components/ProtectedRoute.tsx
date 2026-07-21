@@ -1,9 +1,9 @@
+import { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { JSX } from "react";
 
 interface ProtectedRouteProps {
-    children: JSX.Element;
+    children: ReactNode;
     requireAdmin?: boolean;
 }
 
@@ -27,7 +27,7 @@ export default function ProtectedRoute({ children, requireAdmin = false }: Prote
         return <Navigate to="/products" replace />;
     }
 
-    return children;
+    return <>{children}</>;
 }
 
 const loadingStyles: Record<string, React.CSSProperties> = {
