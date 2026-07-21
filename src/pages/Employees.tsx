@@ -230,6 +230,18 @@ const Employees = () => {
                 )}
             </div>
 
+            {loading && (
+                <div style={{ textAlign: "center", padding: "40px", color: "var(--text-muted)", fontSize: "16px" }}>
+                    ⚡ Đang tải danh sách nhân viên...
+                </div>
+            )}
+
+            {error && (
+                <div style={{ backgroundColor: "#451a1a", border: "1px solid #991b1b", color: "#fca5a5", padding: "14px 18px", borderRadius: "10px", marginBottom: "20px" }}>
+                    ⚠️ {error}
+                </div>
+            )}
+
             <div className="toolbar">
                 <div className="search-filter-group">
                     <div className="search-wrapper">
@@ -714,8 +726,8 @@ const Employees = () => {
                                 >
                                     Hủy
                                 </button>
-                                <button type="submit" className="btn btn-primary">
-                                    {modalMode === "add" ? "Thêm mới" : "Lưu thay đổi"}
+                                <button type="submit" className="btn btn-primary" disabled={submitting}>
+                                    {submitting ? "Đang xử lý..." : modalMode === "add" ? "Thêm mới" : "Lưu thay đổi"}
                                 </button>
                             </div>
                         </form>
