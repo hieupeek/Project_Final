@@ -6,8 +6,12 @@ import {
     deleteEmployee,
     Employee,
 } from "../services/employeeService";
+import { useAuth } from "../context/AuthContext";
 
 const Employees = () => {
+    const { user } = useAuth();
+    const isAdmin = user?.role === "admin";
+
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -206,22 +210,24 @@ const Employees = () => {
                     </svg>
                     Employees Directory
                 </h1>
-                <button onClick={handleOpenAddModal} className="btn btn-primary">
-                    <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    >
-                        <path d="M5 12h14" />
-                        <path d="M12 5v14" />
-                    </svg>
-                    Add Employee
-                </button>
+                {isAdmin && (
+                    <button onClick={handleOpenAddModal} className="btn btn-primary">
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <path d="M5 12h14" />
+                            <path d="M12 5v14" />
+                        </svg>
+                        Add Employee
+                    </button>
+                )}
             </div>
 
             <div className="toolbar">
@@ -416,49 +422,51 @@ const Employees = () => {
                                 </div>
                             </div>
 
-                            <div className="product-card-actions" style={{ marginTop: "20px" }}>
-                                <button
-                                    onClick={() => handleOpenEditModal(emp)}
-                                    className="btn btn-secondary"
-                                    title="Edit"
-                                >
-                                    <svg
-                                        width="16"
-                                        height="16"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
+                            {isAdmin && (
+                                <div className="product-card-actions" style={{ marginTop: "20px" }}>
+                                    <button
+                                        onClick={() => handleOpenEditModal(emp)}
+                                        className="btn btn-secondary"
+                                        title="Edit"
                                     >
-                                        <path d="M12 20h9" />
-                                        <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
-                                    </svg>
-                                    Edit
-                                </button>
-                                <button
-                                    onClick={() => handleDeleteEmployee(emp.id, emp.name)}
-                                    className="btn btn-danger"
-                                    title="Delete"
-                                >
-                                    <svg
-                                        width="16"
-                                        height="16"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
+                                        <svg
+                                            width="16"
+                                            height="16"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <path d="M12 20h9" />
+                                            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                                        </svg>
+                                        Edit
+                                    </button>
+                                    <button
+                                        onClick={() => handleDeleteEmployee(emp.id, emp.name)}
+                                        className="btn btn-danger"
+                                        title="Delete"
                                     >
-                                        <path d="M3 6h18" />
-                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                    </svg>
-                                    Delete
-                                </button>
-                            </div>
+                                        <svg
+                                            width="16"
+                                            height="16"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <path d="M3 6h18" />
+                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                        </svg>
+                                        Delete
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>
@@ -474,7 +482,7 @@ const Employees = () => {
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Status</th>
-                                <th style={{ textAlign: "right" }}>Actions</th>
+                                {isAdmin && <th style={{ textAlign: "right" }}>Actions</th>}
                             </tr>
                         </thead>
                         <tbody>
@@ -513,57 +521,59 @@ const Employees = () => {
                                             {emp.status}
                                         </span>
                                     </td>
-                                    <td style={{ textAlign: "right" }}>
-                                        <div
-                                            style={{
-                                                display: "inline-flex",
-                                                gap: "8px",
-                                            }}
-                                        >
-                                            <button
-                                                onClick={() => handleOpenEditModal(emp)}
-                                                className="btn btn-icon-only"
-                                                title="Edit"
-                                            >
-                                                <svg
-                                                    width="16"
-                                                    height="16"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    strokeWidth="2"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                >
-                                                    <path d="M12 20h9" />
-                                                    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
-                                                </svg>
-                                            </button>
-                                            <button
-                                                onClick={() => handleDeleteEmployee(emp.id, emp.name)}
-                                                className="btn btn-icon-only"
+                                    {isAdmin && (
+                                        <td style={{ textAlign: "right" }}>
+                                            <div
                                                 style={{
-                                                    color: "var(--danger)",
+                                                    display: "inline-flex",
+                                                    gap: "8px",
                                                 }}
-                                                title="Delete"
                                             >
-                                                <svg
-                                                    width="16"
-                                                    height="16"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    strokeWidth="2"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
+                                                <button
+                                                    onClick={() => handleOpenEditModal(emp)}
+                                                    className="btn btn-icon-only"
+                                                    title="Edit"
                                                 >
-                                                    <path d="M3 6h18" />
-                                                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
+                                                    <svg
+                                                        width="16"
+                                                        height="16"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="2"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    >
+                                                        <path d="M12 20h9" />
+                                                        <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                                                    </svg>
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteEmployee(emp.id, emp.name)}
+                                                    className="btn btn-icon-only"
+                                                    style={{
+                                                        color: "var(--danger)",
+                                                    }}
+                                                    title="Delete"
+                                                >
+                                                    <svg
+                                                        width="16"
+                                                        height="16"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="2"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    >
+                                                        <path d="M3 6h18" />
+                                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    )}
                                 </tr>
                             ))}
                         </tbody>

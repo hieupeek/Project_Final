@@ -4,10 +4,11 @@ import { JSX } from "react";
 
 interface ProtectedRouteProps {
     children: JSX.Element;
+    requireAdmin?: boolean;
 }
 
-export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-    const { isAuthenticated, loading } = useAuth();
+export default function ProtectedRoute({ children, requireAdmin = false }: ProtectedRouteProps) {
+    const { user, isAuthenticated, loading } = useAuth();
     const location = useLocation();
 
     if (loading) {
@@ -20,6 +21,10 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
     if (!isAuthenticated) {
         return <Navigate to="/login" state={{ from: location }} replace />;
+    }
+
+    if (requireAdmin && user?.role !== "admin") {
+        return <Navigate to="/products" replace />;
     }
 
     return children;

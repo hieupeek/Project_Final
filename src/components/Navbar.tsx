@@ -127,27 +127,29 @@ const Navbar = () => {
                     Employees
                 </Link>
 
-                <Link
-                    to="/products/add"
-                    className={`navbar-link ${
-                        location.pathname === "/products/add" ? "active" : ""
-                    }`}
-                >
-                    <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                {user?.role === "admin" && (
+                    <Link
+                        to="/products/add"
+                        className={`navbar-link ${
+                            location.pathname === "/products/add" ? "active" : ""
+                        }`}
                     >
-                        <path d="M5 12h14" />
-                        <path d="M12 5v14" />
-                    </svg>
-                    Add Product
-                </Link>
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <path d="M5 12h14" />
+                            <path d="M12 5v14" />
+                        </svg>
+                        Add Product
+                    </Link>
+                )}
 
                 <button
                     onClick={toggleTheme}
