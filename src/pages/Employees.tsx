@@ -1,74 +1,20 @@
-import { useState } from "react";
-
-interface Employee {
-    id: number;
-    name: string;
-    role: string;
-    email: string;
-    phone: string;
-    avatar: string;
-    status: "active" | "inactive";
-}
-
-const initialEmployees: Employee[] = [
-    {
-        id: 1,
-        name: "Nguyễn Văn Hùng",
-        role: "Manager",
-        email: "hung.nguyen@supermarket.com",
-        phone: "0901 234 567",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop",
-        status: "active",
-    },
-    {
-        id: 2,
-        name: "Trần Thị Mai",
-        role: "Cashier",
-        email: "mai.tran@supermarket.com",
-        phone: "0912 345 678",
-        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop",
-        status: "active",
-    },
-    {
-        id: 3,
-        name: "Lê Minh Tuấn",
-        role: "Stocker",
-        email: "tuan.le@supermarket.com",
-        phone: "0988 765 432",
-        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop",
-        status: "active",
-    },
-    {
-        id: 4,
-        name: "Phạm Hải Yến",
-        role: "Accountant",
-        email: "yen.pham@supermarket.com",
-        phone: "0977 111 222",
-        avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop",
-        status: "active",
-    },
-    {
-        id: 5,
-        name: "Vũ Hoàng Nam",
-        role: "Security",
-        email: "nam.vu@supermarket.com",
-        phone: "0933 444 555",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop",
-        status: "active",
-    },
-    {
-        id: 6,
-        name: "Ngô Mỹ Linh",
-        role: "Cashier",
-        email: "linh.ngo@supermarket.com",
-        phone: "0955 888 999",
-        avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop",
-        status: "inactive",
-    },
-];
+import { useState, useEffect } from "react";
+import {
+    getEmployees,
+    addEmployee,
+    updateEmployee,
+    deleteEmployee,
+} from "../services/employeeService";
+import type { Employee } from "../services/employeeService";
+import { useAuth } from "../context/AuthContext";
 
 const Employees = () => {
-    const [employees, setEmployees] = useState<Employee[]>(initialEmployees);
+    const { user } = useAuth();
+    const isAdmin = user?.role === "admin";
+
+    const [employees, setEmployees] = useState<Employee[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedRole, setSelectedRole] = useState("");
     const [selectedStatus, setSelectedStatus] = useState("");
@@ -78,6 +24,7 @@ const Employees = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState<"add" | "edit">("add");
     const [editingId, setEditingId] = useState<number | null>(null);
+    const [submitting, setSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
         role: "Cashier",
@@ -86,6 +33,24 @@ const Employees = () => {
         avatar: "",
         status: "active" as "active" | "inactive",
     });
+
+    const fetchEmployeesData = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const data = await getEmployees();
+            setEmployees(data);
+        } catch (err: unknown) {
+            console.error("Lỗi khi tải danh sách nhân viên:", err);
+            setError("Không thể tải danh sách nhân viên. Vui lòng kiểm tra json-server!");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchEmployeesData();
+    }, []);
 
     // Extract dynamic roles
     const roles = Array.from(new Set(employees.map((e) => e.role)));
@@ -142,7 +107,7 @@ const Employees = () => {
         });
     };
 
-    const handleFormSubmit = (e: React.FormEvent) => {
+    const handleFormSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!formData.name || !formData.email || !formData.phone) {
@@ -155,33 +120,49 @@ const Employees = () => {
             formData.avatar ||
             `https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop`;
 
-        if (modalMode === "add") {
-            const newEmployee: Employee = {
-                id: Date.now(),
-                name: formData.name,
-                role: formData.role,
-                email: formData.email,
-                phone: formData.phone,
-                avatar: finalAvatar,
-                status: formData.status,
-            };
-            setEmployees([newEmployee, ...employees]);
-        } else if (modalMode === "edit" && editingId !== null) {
-            setEmployees(
-                employees.map((emp) =>
-                    emp.id === editingId
-                        ? { ...emp, ...formData, avatar: finalAvatar }
-                        : emp
-                )
-            );
+        try {
+            setSubmitting(true);
+            if (modalMode === "add") {
+                const newEmp = await addEmployee({
+                    name: formData.name,
+                    role: formData.role,
+                    email: formData.email,
+                    phone: formData.phone,
+                    avatar: finalAvatar,
+                    status: formData.status,
+                });
+                setEmployees([newEmp, ...employees]);
+            } else if (modalMode === "edit" && editingId !== null) {
+                const updated = await updateEmployee(editingId, {
+                    name: formData.name,
+                    role: formData.role,
+                    email: formData.email,
+                    phone: formData.phone,
+                    avatar: finalAvatar,
+                    status: formData.status,
+                });
+                setEmployees(
+                    employees.map((emp) => (emp.id === editingId ? updated : emp))
+                );
+            }
+            handleCloseModal();
+        } catch (err: unknown) {
+            console.error("Lỗi khi lưu nhân viên:", err);
+            alert("Không thể lưu thông tin nhân viên. Vui lòng thử lại!");
+        } finally {
+            setSubmitting(false);
         }
-
-        handleCloseModal();
     };
 
-    const handleDeleteEmployee = (id: number, name: string) => {
+    const handleDeleteEmployee = async (id: number, name: string) => {
         if (confirm(`Bạn có chắc muốn xóa nhân viên ${name}?`)) {
-            setEmployees(employees.filter((emp) => emp.id !== id));
+            try {
+                await deleteEmployee(id);
+                setEmployees(employees.filter((emp) => emp.id !== id));
+            } catch (err: unknown) {
+                console.error("Lỗi khi xóa nhân viên:", err);
+                alert("Không thể xóa nhân viên này. Vui lòng kiểm tra lại backend!");
+            }
         }
     };
 
@@ -229,23 +210,37 @@ const Employees = () => {
                     </svg>
                     Employees Directory
                 </h1>
-                <button onClick={handleOpenAddModal} className="btn btn-primary">
-                    <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    >
-                        <path d="M5 12h14" />
-                        <path d="M12 5v14" />
-                    </svg>
-                    Add Employee
-                </button>
+                {isAdmin && (
+                    <button onClick={handleOpenAddModal} className="btn btn-primary">
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <path d="M5 12h14" />
+                            <path d="M12 5v14" />
+                        </svg>
+                        Add Employee
+                    </button>
+                )}
             </div>
+
+            {loading && (
+                <div style={{ textAlign: "center", padding: "40px", color: "var(--text-muted)", fontSize: "16px" }}>
+                    ⚡ Đang tải danh sách nhân viên...
+                </div>
+            )}
+
+            {error && (
+                <div style={{ backgroundColor: "#451a1a", border: "1px solid #991b1b", color: "#fca5a5", padding: "14px 18px", borderRadius: "10px", marginBottom: "20px" }}>
+                    ⚠️ {error}
+                </div>
+            )}
 
             <div className="toolbar">
                 <div className="search-filter-group">
@@ -439,49 +434,51 @@ const Employees = () => {
                                 </div>
                             </div>
 
-                            <div className="product-card-actions" style={{ marginTop: "20px" }}>
-                                <button
-                                    onClick={() => handleOpenEditModal(emp)}
-                                    className="btn btn-secondary"
-                                    title="Edit"
-                                >
-                                    <svg
-                                        width="16"
-                                        height="16"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
+                            {isAdmin && (
+                                <div className="product-card-actions" style={{ marginTop: "20px" }}>
+                                    <button
+                                        onClick={() => handleOpenEditModal(emp)}
+                                        className="btn btn-secondary"
+                                        title="Edit"
                                     >
-                                        <path d="M12 20h9" />
-                                        <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
-                                    </svg>
-                                    Edit
-                                </button>
-                                <button
-                                    onClick={() => handleDeleteEmployee(emp.id, emp.name)}
-                                    className="btn btn-danger"
-                                    title="Delete"
-                                >
-                                    <svg
-                                        width="16"
-                                        height="16"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
+                                        <svg
+                                            width="16"
+                                            height="16"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <path d="M12 20h9" />
+                                            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                                        </svg>
+                                        Edit
+                                    </button>
+                                    <button
+                                        onClick={() => handleDeleteEmployee(emp.id, emp.name)}
+                                        className="btn btn-danger"
+                                        title="Delete"
                                     >
-                                        <path d="M3 6h18" />
-                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                    </svg>
-                                    Delete
-                                </button>
-                            </div>
+                                        <svg
+                                            width="16"
+                                            height="16"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <path d="M3 6h18" />
+                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                        </svg>
+                                        Delete
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>
@@ -497,7 +494,7 @@ const Employees = () => {
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Status</th>
-                                <th style={{ textAlign: "right" }}>Actions</th>
+                                {isAdmin && <th style={{ textAlign: "right" }}>Actions</th>}
                             </tr>
                         </thead>
                         <tbody>
@@ -536,57 +533,59 @@ const Employees = () => {
                                             {emp.status}
                                         </span>
                                     </td>
-                                    <td style={{ textAlign: "right" }}>
-                                        <div
-                                            style={{
-                                                display: "inline-flex",
-                                                gap: "8px",
-                                            }}
-                                        >
-                                            <button
-                                                onClick={() => handleOpenEditModal(emp)}
-                                                className="btn btn-icon-only"
-                                                title="Edit"
-                                            >
-                                                <svg
-                                                    width="16"
-                                                    height="16"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    strokeWidth="2"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                >
-                                                    <path d="M12 20h9" />
-                                                    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
-                                                </svg>
-                                            </button>
-                                            <button
-                                                onClick={() => handleDeleteEmployee(emp.id, emp.name)}
-                                                className="btn btn-icon-only"
+                                    {isAdmin && (
+                                        <td style={{ textAlign: "right" }}>
+                                            <div
                                                 style={{
-                                                    color: "var(--danger)",
+                                                    display: "inline-flex",
+                                                    gap: "8px",
                                                 }}
-                                                title="Delete"
                                             >
-                                                <svg
-                                                    width="16"
-                                                    height="16"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    strokeWidth="2"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
+                                                <button
+                                                    onClick={() => handleOpenEditModal(emp)}
+                                                    className="btn btn-icon-only"
+                                                    title="Edit"
                                                 >
-                                                    <path d="M3 6h18" />
-                                                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
+                                                    <svg
+                                                        width="16"
+                                                        height="16"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="2"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    >
+                                                        <path d="M12 20h9" />
+                                                        <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                                                    </svg>
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteEmployee(emp.id, emp.name)}
+                                                    className="btn btn-icon-only"
+                                                    style={{
+                                                        color: "var(--danger)",
+                                                    }}
+                                                    title="Delete"
+                                                >
+                                                    <svg
+                                                        width="16"
+                                                        height="16"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="2"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    >
+                                                        <path d="M3 6h18" />
+                                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    )}
                                 </tr>
                             ))}
                         </tbody>
@@ -727,8 +726,8 @@ const Employees = () => {
                                 >
                                     Hủy
                                 </button>
-                                <button type="submit" className="btn btn-primary">
-                                    {modalMode === "add" ? "Thêm mới" : "Lưu thay đổi"}
+                                <button type="submit" className="btn btn-primary" disabled={submitting}>
+                                    {submitting ? "Đang xử lý..." : modalMode === "add" ? "Thêm mới" : "Lưu thay đổi"}
                                 </button>
                             </div>
                         </form>

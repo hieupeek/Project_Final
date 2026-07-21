@@ -1,100 +1,313 @@
 {
   "products": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Coca Cola",
       "category": "Drink",
       "price": 12000,
-      "quantity": 50,
+      "costPrice": 8000,
+      "quantity": 49,
       "image": "https://picsum.photos/100?random=1"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Pepsi",
       "category": "Drink",
       "price": 11000,
-      "quantity": 30,
+      "costPrice": 7500,
+      "quantity": 29,
       "image": "https://picsum.photos/100?random=2"
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Sprite",
       "category": "Drink",
       "price": 10000,
+      "costPrice": 6500,
       "quantity": 25,
       "image": "https://picsum.photos/100?random=3"
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Oreo",
       "category": "Snack",
       "price": 25000,
+      "costPrice": 16000,
       "quantity": 20,
       "image": "https://picsum.photos/100?random=4"
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "Lay's Classic",
       "category": "Snack",
       "price": 18000,
+      "costPrice": 12000,
       "quantity": 35,
       "image": "https://picsum.photos/100?random=5"
     },
     {
-      "id": 6,
+      "id": "6",
       "name": "KitKat",
       "category": "Snack",
       "price": 15000,
+      "costPrice": 10000,
       "quantity": 40,
       "image": "https://picsum.photos/100?random=6"
     },
     {
-      "id": 7,
+      "id": "7",
       "name": "Vinamilk Fresh Milk",
       "category": "Dairy",
       "price": 32000,
+      "costPrice": 24000,
       "quantity": 28,
       "image": "https://picsum.photos/100?random=7"
     },
     {
-      "id": 8,
+      "id": "8",
       "name": "TH True Milk",
       "category": "Dairy",
       "price": 34000,
+      "costPrice": 25000,
       "quantity": 22,
       "image": "https://picsum.photos/100?random=8"
     },
     {
-      "id": 9,
+      "id": "9",
       "name": "Instant Noodles",
       "category": "Food",
       "price": 6000,
+      "costPrice": 4000,
       "quantity": 100,
       "image": "https://picsum.photos/100?random=9"
     },
     {
-      "id": 10,
+      "id": "10",
       "name": "Rice 5kg",
       "category": "Food",
       "price": 135000,
+      "costPrice": 105000,
       "quantity": 15,
       "image": "https://picsum.photos/100?random=10"
     },
     {
-      "id": 11,
+      "id": "11",
       "name": "Cooking Oil",
       "category": "Food",
       "price": 48000,
+      "costPrice": 36000,
       "quantity": 18,
       "image": "https://picsum.photos/100?random=11"
     },
     {
-      "id": 12,
+      "id": "12",
       "name": "Mineral Water",
       "category": "Drink",
       "price": 7000,
+      "costPrice": 4500,
       "quantity": 80,
       "image": "https://picsum.photos/100?random=12"
+    },
+    {
+      "name": "ytytytytyt",
+      "category": "drink",
+      "price": 100000,
+      "quantity": 9,
+      "image": "",
+      "id": "kvuzXIJ4Gw0"
     }
-  ]
+  ],
+  "users": [
+    {
+      "id": "1",
+      "name": "Nguyễn Hoàng Nam (Admin)",
+      "email": "admin@supermarket.com",
+      "password": "123",
+      "role": "admin",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop"
+    },
+    {
+      "id": "2",
+      "name": "Vũ Hoàng Nam (Nhân viên)",
+      "email": "staff@supermarket.com",
+      "password": "123",
+      "role": "employee",
+      "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop"
+    }
+  ],
+  "employees": [
+    {
+      "id": "1",
+      "name": "Nguyễn Văn Hùng",
+      "role": "Manager",
+      "email": "hung.nguyen@supermarket.com",
+      "phone": "0901 234 567",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop",
+      "status": "active"
+    },
+    {
+      "id": "2",
+      "name": "Trần Thị Mai",
+      "role": "Cashier",
+      "email": "mai.tran@supermarket.com",
+      "phone": "0912 345 678",
+      "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop",
+      "status": "active"
+    },
+    {
+      "id": "3",
+      "name": "Lê Minh Tuấn",
+      "role": "Stocker",
+      "email": "tuan.le@supermarket.com",
+      "phone": "0988 765 432",
+      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop",
+      "status": "active"
+    },
+    {
+      "id": "4",
+      "name": "Phạm Hải Yến",
+      "role": "Accountant",
+      "email": "yen.pham@supermarket.com",
+      "phone": "0977 111 222",
+      "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop",
+      "status": "active"
+    },
+    {
+      "id": "5",
+      "name": "Vũ Hoàng Nam",
+      "role": "Security",
+      "email": "nam.vu@supermarket.com",
+      "phone": "0933 444 555",
+      "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop",
+      "status": "active"
+    }
+  ],
+  "orders": [
+    {
+      "id": "ORD-1001",
+      "items": [
+        {
+          "productId": 1,
+          "name": "Coca Cola",
+          "price": 12000,
+          "costPrice": 8000,
+          "quantity": 5,
+          "subtotal": 60000,
+          "costSubtotal": 40000,
+          "profit": 20000
+        },
+        {
+          "productId": 4,
+          "name": "Oreo",
+          "price": 25000,
+          "costPrice": 16000,
+          "quantity": 2,
+          "subtotal": 50000,
+          "costSubtotal": 32000,
+          "profit": 18000
+        }
+      ],
+      "total": 110000,
+      "totalCost": 72000,
+      "totalProfit": 38000,
+      "createdAt": "2026-07-20T14:30:00.000Z",
+      "employeeId": "1",
+      "employeeName": "Nguyễn Hoàng Nam (Admin)"
+    },
+    {
+      "id": "ORD-1002",
+      "items": [
+        {
+          "productId": 10,
+          "name": "Rice 5kg",
+          "price": 135000,
+          "costPrice": 105000,
+          "quantity": 1,
+          "subtotal": 135000,
+          "costSubtotal": 105000,
+          "profit": 30000
+        },
+        {
+          "productId": 7,
+          "name": "Vinamilk Fresh Milk",
+          "price": 32000,
+          "costPrice": 24000,
+          "quantity": 2,
+          "subtotal": 64000,
+          "costSubtotal": 48000,
+          "profit": 16000
+        }
+      ],
+      "total": 199000,
+      "totalCost": 153000,
+      "totalProfit": 46000,
+      "createdAt": "2026-07-21T08:15:00.000Z",
+      "employeeId": "2",
+      "employeeName": "Vũ Hoàng Nam (Nhân viên)"
+    },
+    {
+      "items": [
+        {
+          "productId": "1",
+          "name": "Coca Cola",
+          "price": 12000,
+          "costPrice": 8000,
+          "quantity": 1,
+          "subtotal": 12000,
+          "costSubtotal": 8000,
+          "profit": 4000
+        }
+      ],
+      "total": 12000,
+      "totalCost": 8000,
+      "totalProfit": 4000,
+      "createdAt": "2026-07-21T03:20:16.539Z",
+      "employeeId": "1",
+      "employeeName": "Nguyễn Hoàng Nam (Admin)",
+      "id": "WmEVle-b0bc"
+    },
+    {
+      "items": [
+        {
+          "productId": "2",
+          "name": "Pepsi",
+          "price": 11000,
+          "costPrice": 7500,
+          "quantity": 1,
+          "subtotal": 11000,
+          "costSubtotal": 7500,
+          "profit": 3500
+        }
+      ],
+      "total": 11000,
+      "totalCost": 7500,
+      "totalProfit": 3500,
+      "createdAt": "2026-07-21T03:20:56.283Z",
+      "employeeId": "1",
+      "employeeName": "Nguyễn Hoàng Nam (Admin)",
+      "id": "cmBP67Yg-gg"
+    },
+    {
+      "items": [
+        {
+          "productId": "kvuzXIJ4Gw0",
+          "name": "ytytytytyt",
+          "price": 100000,
+          "costPrice": 65000,
+          "quantity": 1,
+          "subtotal": 100000,
+          "costSubtotal": 65000,
+          "profit": 35000
+        }
+      ],
+      "total": 100000,
+      "totalCost": 65000,
+      "totalProfit": 35000,
+      "createdAt": "2026-07-21T03:22:47.773Z",
+      "employeeId": "1",
+      "employeeName": "Nguyễn Hoàng Nam (Admin)",
+      "id": "29A8ApQd2eo"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
