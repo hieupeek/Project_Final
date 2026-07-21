@@ -192,11 +192,21 @@ const Navbar = () => {
                     )}
                 </button>
 
-                {/* Auth User Section */}
-                <div style={{ marginLeft: "8px", display: "flex", alignItems: "center", gap: "10px" }}>
+                {/* Auth User Profile Badge Section */}
+                <div style={{ marginLeft: "10px", display: "flex", alignItems: "center", gap: "12px" }}>
                     {isAuthenticated && user ? (
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "10px",
+                                    padding: "4px 10px 4px 6px",
+                                    borderRadius: "30px",
+                                    backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.05)",
+                                    border: isDark ? "1px solid rgba(255, 255, 255, 0.12)" : "1px solid rgba(0, 0, 0, 0.08)",
+                                }}
+                            >
                                 <img
                                     src={user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`}
                                     alt={user.name}
@@ -205,29 +215,39 @@ const Navbar = () => {
                                         height: "34px",
                                         borderRadius: "50%",
                                         objectFit: "cover",
-                                        border: "2px solid #3b82f6",
+                                        boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
                                     }}
                                 />
                                 <div style={{ display: "flex", flexDirection: "column", lineHeight: "1.2" }}>
-                                    <span style={{ fontSize: "14px", fontWeight: "600" }}>{user.name}</span>
-                                    <span
-                                        style={{
-                                            fontSize: "11px",
-                                            fontWeight: "700",
-                                            textTransform: "uppercase",
-                                            color: user.role === "admin" ? "#f59e0b" : "#10b981",
-                                        }}
-                                    >
-                                        {user.role}
-                                    </span>
+                                    <span style={{ fontSize: "13px", fontWeight: "700" }}>{user.name}</span>
+                                    <div style={{ display: "flex", alignItems: "center", gap: "4px", marginTop: "2px" }}>
+                                        <span
+                                            style={{
+                                                fontSize: "10px",
+                                                fontWeight: "800",
+                                                letterSpacing: "0.5px",
+                                                padding: "2px 6px",
+                                                borderRadius: "10px",
+                                                textTransform: "uppercase",
+                                                color: "#ffffff",
+                                                background:
+                                                    user.role === "admin"
+                                                        ? "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)"
+                                                        : "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                                                boxShadow: "0 2px 4px rgba(0,0,0,0.15)",
+                                            }}
+                                        >
+                                            {user.role === "admin" ? "👑 ADMIN" : "🧑‍💼 EMPLOYEE"}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                             <button
                                 onClick={handleLogout}
                                 style={{
-                                    padding: "6px 12px",
-                                    borderRadius: "8px",
-                                    backgroundColor: "#dc2626",
+                                    padding: "7px 14px",
+                                    borderRadius: "20px",
+                                    backgroundColor: "#ef4444",
                                     color: "#ffffff",
                                     border: "none",
                                     fontSize: "13px",
@@ -236,9 +256,12 @@ const Navbar = () => {
                                     display: "flex",
                                     alignItems: "center",
                                     gap: "4px",
+                                    transition: "all 0.2s ease",
+                                    boxShadow: "0 2px 6px rgba(239, 68, 68, 0.3)",
                                 }}
+                                title="Thoát tài khoản"
                             >
-                                🚪 Thoát
+                                🚪 Thoát (Logout)
                             </button>
                         </div>
                     ) : (
