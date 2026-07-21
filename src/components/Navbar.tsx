@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
     const location = useLocation();
+    const navigate = useNavigate();
+    const { user, isAuthenticated, logout } = useAuth();
+
     const [isDark, setIsDark] = useState(() => {
         const savedTheme = localStorage.getItem("theme");
         if (savedTheme) {
@@ -26,8 +30,13 @@ const Navbar = () => {
         setIsDark(!isDark);
     };
 
+    const handleLogout = () => {
+        logout();
+        navigate("/login");
+    };
+
     return (
-        <nav className="navbar">
+        <nav className="navbar" style={{ padding: "0.75rem 1.5rem" }}>
             <Link to="/" className="navbar-brand">
                 <svg
                     width="24"
@@ -47,7 +56,7 @@ const Navbar = () => {
                 SuperMarket
             </Link>
 
-            <div className="navbar-menu">
+            <div className="navbar-menu" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                 <Link
                     to="/"
                     className={`navbar-link ${
@@ -147,7 +156,6 @@ const Navbar = () => {
                     aria-label="Toggle theme"
                 >
                     {isDark ? (
-                        /* Sun Icon */
                         <svg
                             width="20"
                             height="20"
@@ -169,7 +177,6 @@ const Navbar = () => {
                             <path d="m19.07 4.93-1.41 1.41" />
                         </svg>
                     ) : (
-                        /* Moon Icon */
                         <svg
                             width="20"
                             height="20"
@@ -184,6 +191,89 @@ const Navbar = () => {
                         </svg>
                     )}
                 </button>
+
+                {/* Auth User Section */}
+                <div style={{ marginLeft: "8px", display: "flex", alignItems: "center", gap: "10px" }}>
+                    {isAuthenticated && user ? (
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                <img
+                                    src={user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`}
+                                    alt={user.name}
+                                    style={{
+                                        width: "34px",
+                                        height: "34px",
+                                        borderRadius: "50%",
+                                        objectFit: "cover",
+                                        border: "2px solid #3b82f6",
+                                    }}
+                                />
+                                <div style={{ display: "flex", flexDirection: "column", lineHeight: "1.2" }}>
+                                    <span style={{ fontSize: "14px", fontWeight: "600" }}>{user.name}</span>
+                                    <span
+                                        style={{
+                                            fontSize: "11px",
+                                            fontWeight: "700",
+                                            textTransform: "uppercase",
+                                            color: user.role === "admin" ? "#f59e0b" : "#10b981",
+                                        }}
+                                    >
+                                        {user.role}
+                                    </span>
+                                </div>
+                            </div>
+                            <button
+                                onClick={handleLogout}
+                                style={{
+                                    padding: "6px 12px",
+                                    borderRadius: "8px",
+                                    backgroundColor: "#dc2626",
+                                    color: "#ffffff",
+                                    border: "none",
+                                    fontSize: "13px",
+                                    fontWeight: "600",
+                                    cursor: "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "4px",
+                                }}
+                            >
+                                🚪 Thoát
+                            </button>
+                        </div>
+                    ) : (
+                        <div style={{ display: "flex", gap: "8px" }}>
+                            <Link
+                                to="/login"
+                                style={{
+                                    padding: "6px 14px",
+                                    borderRadius: "8px",
+                                    backgroundColor: "#2563eb",
+                                    color: "#ffffff",
+                                    textDecoration: "none",
+                                    fontSize: "14px",
+                                    fontWeight: "600",
+                                }}
+                            >
+                                Đăng nhập
+                            </Link>
+                            <Link
+                                to="/register"
+                                style={{
+                                    padding: "6px 14px",
+                                    borderRadius: "8px",
+                                    backgroundColor: "#10b981",
+                                    color: "#ffffff",
+                                    textDecoration: "none",
+                                    fontSize: "14px",
+                                    fontWeight: "600",
+                                }}
+                            >
+                                Đăng ký
+                            </Link>
+                        </div>
+                    )}
+                </div>
             </div>
         </nav>
     );

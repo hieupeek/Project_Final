@@ -96,5 +96,70 @@
       "quantity": 80,
       "image": "https://picsum.photos/100?random=12"
     }
+  ],
+  "users": [
+    {
+      "id": "1",
+      "name": "Nguyễn Hoàng Nam (Admin)",
+      "email": "admin@supermarket.com",
+      "password": "123",
+      "role": "admin",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop"
+    },
+    {
+      "id": "2",
+      "name": "Vũ Hoàng Nam (Nhân viên)",
+      "email": "staff@supermarket.com",
+      "password": "123",
+      "role": "employee",
+      "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop"
+    }
+  ],
+  "employees": [
+    {
+      "id": 1,
+      "name": "Nguyễn Văn Hùng",
+      "role": "Manager",
+      "email": "hung.nguyen@supermarket.com",
+      "phone": "0901 234 567",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop",
+      "status": "active"
+    },
+    {
+      "id": 2,
+      "name": "Trần Thị Mai",
+      "role": "Cashier",
+      "email": "mai.tran@supermarket.com",
+      "phone": "0912 345 678",
+      "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop",
+      "status": "active"
+    },
+    {
+      "id": 3,
+      "name": "Lê Minh Tuấn",
+      "role": "Stocker",
+      "email": "tuan.le@supermarket.com",
+      "phone": "0988 765 432",
+      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop",
+      "status": "active"
+    },
+    {
+      "id": 4,
+      "name": "Phạm Hải Yến",
+      "role": "Accountant",
+      "email": "yen.pham@supermarket.com",
+      "phone": "0977 111 222",
+      "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop",
+      "status": "active"
+    },
+    {
+      "id": 5,
+      "name": "Vũ Hoàng Nam",
+      "role": "Security",
+      "email": "nam.vu@supermarket.com",
+      "phone": "0933 444 555",
+      "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop",
+      "status": "active"
+    }
   ]
 }
