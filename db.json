@@ -4,7 +4,7 @@
       "name": "Coca Cola",
       "category": "Drink",
       "price": 12000,
-      "quantity": 43,
+      "quantity": 42,
       "image": "/images/coca-cola.jpg",
       "id": "1"
     },
@@ -14,7 +14,7 @@
       "category": "Drink",
       "price": 11000,
       "costPrice": 7500,
-      "quantity": 26,
+      "quantity": 24,
       "image": "/images/pepsi.jpg"
     },
     {
@@ -108,20 +108,12 @@
       "image": "/images/lavie.jpg"
     },
     {
-      "name": "ytytytytyt",
-      "category": "drink",
-      "price": 100000,
-      "quantity": 8,
-      "image": "",
-      "id": "kvuzXIJ4Gw0"
-    },
-    {
-      "name": "Vimm",
-      "category": "Food",
+      "name": "Trần Thị Mai",
+      "category": "Drink",
       "price": 30000,
-      "quantity": 19,
-      "image": "",
-      "id": "R7Qijsjkzr4"
+      "quantity": 33,
+      "image": "https://picsum.photos/100?random=1",
+      "id": "13"
     }
   ],
   "users": [
@@ -191,37 +183,6 @@
   ],
   "orders": [
     {
-      "id": "ORD-1001",
-      "items": [
-        {
-          "productId": 1,
-          "name": "Coca Cola",
-          "price": 12000,
-          "costPrice": 8000,
-          "quantity": 5,
-          "subtotal": 60000,
-          "costSubtotal": 40000,
-          "profit": 20000
-        },
-        {
-          "productId": 4,
-          "name": "Oreo",
-          "price": 25000,
-          "costPrice": 16000,
-          "quantity": 2,
-          "subtotal": 50000,
-          "costSubtotal": 32000,
-          "profit": 18000
-        }
-      ],
-      "total": 110000,
-      "totalCost": 72000,
-      "totalProfit": 38000,
-      "createdAt": "2026-07-20T14:30:00.000Z",
-      "employeeId": "1",
-      "employeeName": "Nguyễn Hoàng Nam (Admin)"
-    },
-    {
       "id": "ORD-1002",
       "items": [
         {
@@ -251,27 +212,6 @@
       "createdAt": "2026-07-21T08:15:00.000Z",
       "employeeId": "2",
       "employeeName": "Vũ Hoàng Nam (Nhân viên)"
-    },
-    {
-      "items": [
-        {
-          "productId": "1",
-          "name": "Coca Cola",
-          "price": 12000,
-          "costPrice": 8000,
-          "quantity": 1,
-          "subtotal": 12000,
-          "costSubtotal": 8000,
-          "profit": 4000
-        }
-      ],
-      "total": 12000,
-      "totalCost": 8000,
-      "totalProfit": 4000,
-      "createdAt": "2026-07-21T03:20:16.539Z",
-      "employeeId": "1",
-      "employeeName": "Nguyễn Hoàng Nam (Admin)",
-      "id": "WmEVle-b0bc"
     },
     {
       "items": [
@@ -590,6 +530,69 @@
       "employeeId": "2",
       "employeeName": "Vũ Hoàng Nam (Nhân viên)",
       "id": "AusIPUE5xx8"
+    },
+    {
+      "items": [
+        {
+          "productId": "2",
+          "name": "Pepsi",
+          "price": 11000,
+          "costPrice": 7500,
+          "quantity": 1,
+          "subtotal": 11000,
+          "costSubtotal": 7500,
+          "profit": 3500
+        }
+      ],
+      "total": 11000,
+      "totalCost": 7500,
+      "totalProfit": 3500,
+      "createdAt": "2026-08-02T13:39:36.129Z",
+      "employeeId": "1",
+      "employeeName": "Nguyễn Hoàng Nam (Admin)",
+      "id": "xjUJ95tf6Y0"
+    },
+    {
+      "items": [
+        {
+          "productId": "2",
+          "name": "Pepsi",
+          "price": 11000,
+          "costPrice": 7500,
+          "quantity": 1,
+          "subtotal": 11000,
+          "costSubtotal": 7500,
+          "profit": 3500
+        }
+      ],
+      "total": 11000,
+      "totalCost": 7500,
+      "totalProfit": 3500,
+      "createdAt": "2026-08-02T13:47:11.620Z",
+      "employeeId": "1",
+      "employeeName": "Nguyễn Hoàng Nam (Admin)",
+      "id": "40t6WcdP6vQ"
+    },
+    {
+      "items": [
+        {
+          "productId": "1",
+          "name": "Coca Cola",
+          "price": 12000,
+          "costPrice": 6000,
+          "quantity": 1,
+          "subtotal": 12000,
+          "costSubtotal": 6000,
+          "profit": 6000
+        }
+      ],
+      "total": 12000,
+      "totalCost": 6000,
+      "totalProfit": 6000,
+      "createdAt": "2026-08-02T14:05:19.978Z",
+      "employeeId": "1",
+      "employeeName": "Nguyễn Hoàng Nam (Admin)",
+      "id": "mt7OCJX"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

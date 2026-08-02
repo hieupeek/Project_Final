@@ -21,6 +21,8 @@ export default function SalesHistory() {
     const [timeFilter, setTimeFilter] = useState<"all" | "today" | "7days" | "month">("all");
     const [activeTab, setActiveTab] = useState<"history" | "analytics">("history");
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
 
     const fetchOrderData = async () => {
         try {
@@ -89,6 +91,18 @@ export default function SalesHistory() {
             (o.employeeName && o.employeeName.toLowerCase().includes(query))
         );
     });
+    //Pagging
+    const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+
+    const paginatedOrders = filteredOrders.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    // Reset về trang đầu khi tìm kiếm hoặc lọc
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, timeFilter]);
 
     // Tính toán số liệu thống kê tổng quan
     const totalRevenue = filteredOrders.reduce((sum, o) => sum + o.total, 0);
@@ -313,6 +327,57 @@ export default function SalesHistory() {
                                 </div>
                             ) : (
                                 <div className="table-responsive">
+                                    {/* chinh pagging */}
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            justifyContent: "flex-end",
+                                            alignItems: "center",
+                                            gap: "12px",
+                                            marginBottom: "16px",
+                                            padding: "12px 16px",
+                                            backgroundColor: "var(--bg-card)",
+                                            border: "1px solid var(--border-color)",
+                                            borderRadius: "10px",
+                                        }}
+                                    >
+                                        <span
+                                            style={{
+                                                fontSize: "14px",
+                                                fontWeight: "600",
+                                                color: "var(--text-main)",
+                                            }}
+                                        >
+                                            Hiển thị
+                                        </span>
+
+                                        <select
+                                            value={itemsPerPage}
+                                            onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                                            className="form-select"
+                                            style={{
+                                                width: "90px",
+                                                textAlign: "center",
+                                                cursor: "pointer",
+                                                fontWeight: "600",
+                                            }}
+                                        >
+                                            <option value={5}>5</option>
+                                            <option value={10}>10</option>
+                                            <option value={20}>20</option>
+                                            <option value={50}>50</option>
+                                            <option value={100}>100</option>
+                                        </select>
+
+                                        <span
+                                            style={{
+                                                fontSize: "14px",
+                                                color: "var(--text-muted)",
+                                            }}
+                                        >
+                                            hóa đơn / trang
+                                        </span>
+                                    </div>
                                     <table className="table">
                                         <thead>
                                             <tr>
@@ -327,7 +392,7 @@ export default function SalesHistory() {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {filteredOrders.map((order) => {
+                                            {paginatedOrders.map((order) => {
                                                 const orderCost = order.totalCost ?? order.items.reduce((s, i) => s + (i.costPrice ?? Math.round(i.price * 0.65)) * i.quantity, 0);
                                                 const orderProfit = order.totalProfit ?? order.total - orderCost;
 
@@ -375,6 +440,59 @@ export default function SalesHistory() {
                                             })}
                                         </tbody>
                                     </table>
+
+                                    {/* ================= Pagination ================= */}
+
+                                    {totalPages > 1 && (
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                                alignItems: "center",
+                                                marginTop: "20px",
+                                                flexWrap: "wrap",
+                                                gap: "10px",
+                                            }}
+                                        >
+                                            <div style={{ fontSize: "14px", color: "#666" }}>
+                                                Trang <b>{currentPage}</b> / <b>{totalPages}</b>
+                                                {" | "}
+                                                Tổng: <b>{filteredOrders.length}</b> hóa đơn
+                                            </div>
+
+                                            <div style={{ display: "flex", gap: "6px" }}>
+                                                <button
+                                                    className="btn btn-secondary"
+                                                    disabled={currentPage === 1}
+                                                    onClick={() => setCurrentPage(currentPage - 1)}
+                                                >
+                                                    ◀
+                                                </button>
+
+                                                {Array.from({ length: totalPages }, (_, index) => (
+                                                    <button
+                                                        key={index}
+                                                        onClick={() => setCurrentPage(index + 1)}
+                                                        className={
+                                                            currentPage === index + 1
+                                                                ? "btn btn-primary"
+                                                                : "btn btn-secondary"
+                                                        }
+                                                    >
+                                                        {index + 1}
+                                                    </button>
+                                                ))}
+
+                                                <button
+                                                    className="btn btn-secondary"
+                                                    disabled={currentPage === totalPages}
+                                                    onClick={() => setCurrentPage(currentPage + 1)}
+                                                >
+                                                    ▶
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>
