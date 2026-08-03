@@ -182,6 +182,23 @@ const Employees = () => {
         }
     };
 
+    const getRoleTranslation = (role: string) => {
+        switch (role.toLowerCase()) {
+            case "manager":
+                return "Quản lý";
+            case "cashier":
+                return "Thu ngân";
+            case "stocker":
+                return "Nhân viên kho";
+            case "security":
+                return "Bảo vệ";
+            case "accountant":
+                return "Kế toán";
+            default:
+                return role;
+        }
+    };
+
     return (
         <>
             <div
@@ -208,7 +225,7 @@ const Employees = () => {
                         <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
                         <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                     </svg>
-                    Employees Directory
+                    Danh Sách Nhân Viên
                 </h1>
                 {isAdmin && (
                     <button onClick={handleOpenAddModal} className="btn btn-primary">
@@ -225,7 +242,7 @@ const Employees = () => {
                             <path d="M5 12h14" />
                             <path d="M12 5v14" />
                         </svg>
-                        Add Employee
+                        Thêm Nhân Viên
                     </button>
                 )}
             </div>
@@ -261,7 +278,7 @@ const Employees = () => {
                         </svg>
                         <input
                             type="text"
-                            placeholder="Search name, role, email..."
+                            placeholder="Tìm theo tên, vai trò, email..."
                             className="form-control search-input"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -274,10 +291,10 @@ const Employees = () => {
                         onChange={(e) => setSelectedRole(e.target.value)}
                         style={{ minWidth: "140px" }}
                     >
-                        <option value="">All Roles</option>
+                        <option value="">Tất cả vai trò</option>
                         {roles.map((r) => (
                             <option key={r} value={r}>
-                                {r}
+                                {getRoleTranslation(r)}
                             </option>
                         ))}
                     </select>
@@ -288,9 +305,9 @@ const Employees = () => {
                         onChange={(e) => setSelectedStatus(e.target.value)}
                         style={{ minWidth: "140px" }}
                     >
-                        <option value="">All Statuses</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="active">Đang hoạt động</option>
+                        <option value="inactive">Ngưng hoạt động</option>
                     </select>
                 </div>
 
@@ -360,8 +377,8 @@ const Employees = () => {
                             <line x1="8" x2="16" y1="12" y2="12" />
                         </svg>
                     </span>
-                    <h2>No employees found</h2>
-                    <p>Try adjusting your search query or role/status filters.</p>
+                    <h2>Không tìm thấy nhân viên nào</h2>
+                    <p>Hãy thử điều chỉnh từ khóa tìm kiếm hoặc bộ lọc vai trò/trạng thái.</p>
                 </div>
             ) : viewMode === "grid" ? (
                 /* GRID VIEW */
@@ -384,7 +401,7 @@ const Employees = () => {
                             </h3>
                             <div style={{ marginBottom: "12px" }}>
                                 <span className={`badge ${getRoleBadgeClass(emp.role)}`} style={{ marginRight: "6px" }}>
-                                    {emp.role}
+                                    {getRoleTranslation(emp.role)}
                                 </span>
                                 <span
                                     className={`badge ${
@@ -394,7 +411,7 @@ const Employees = () => {
                                     }`}
                                     style={{ background: emp.status === "inactive" ? "rgba(100, 116, 139, 0.1)" : "", color: emp.status === "inactive" ? "var(--text-muted)" : "" }}
                                 >
-                                    {emp.status}
+                                    {emp.status === "active" ? "Đang hoạt động" : "Ngưng hoạt động"}
                                 </span>
                             </div>
 
@@ -439,7 +456,7 @@ const Employees = () => {
                                     <button
                                         onClick={() => handleOpenEditModal(emp)}
                                         className="btn btn-secondary"
-                                        title="Edit"
+                                        title="Sửa"
                                     >
                                         <svg
                                             width="16"
@@ -454,12 +471,12 @@ const Employees = () => {
                                             <path d="M12 20h9" />
                                             <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
                                         </svg>
-                                        Edit
+                                        Sửa
                                     </button>
                                     <button
                                         onClick={() => handleDeleteEmployee(emp.id, emp.name)}
                                         className="btn btn-danger"
-                                        title="Delete"
+                                        title="Xóa"
                                     >
                                         <svg
                                             width="16"
@@ -475,7 +492,7 @@ const Employees = () => {
                                             <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
                                             <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
                                         </svg>
-                                        Delete
+                                        Xóa
                                     </button>
                                 </div>
                             )}
@@ -488,13 +505,13 @@ const Employees = () => {
                     <table className="table">
                         <thead>
                             <tr>
-                                <th>Avatar</th>
-                                <th>Name</th>
-                                <th>Role</th>
+                                <th>Ảnh đại diện</th>
+                                <th>Họ tên</th>
+                                <th>Vai trò</th>
                                 <th>Email</th>
-                                <th>Phone</th>
-                                <th>Status</th>
-                                {isAdmin && <th style={{ textAlign: "right" }}>Actions</th>}
+                                <th>Số điện thoại</th>
+                                <th>Trạng thái</th>
+                                {isAdmin && <th style={{ textAlign: "right" }}>Hành động</th>}
                             </tr>
                         </thead>
                         <tbody>
@@ -516,7 +533,7 @@ const Employees = () => {
                                     <td style={{ fontWeight: 600 }}>{emp.name}</td>
                                     <td>
                                         <span className={`badge ${getRoleBadgeClass(emp.role)}`}>
-                                            {emp.role}
+                                            {getRoleTranslation(emp.role)}
                                         </span>
                                     </td>
                                     <td>{emp.email}</td>
@@ -530,7 +547,7 @@ const Employees = () => {
                                             }`}
                                             style={{ background: emp.status === "inactive" ? "rgba(100, 116, 139, 0.1)" : "", color: emp.status === "inactive" ? "var(--text-muted)" : "" }}
                                         >
-                                            {emp.status}
+                                            {emp.status === "active" ? "Đang hoạt động" : "Ngưng hoạt động"}
                                         </span>
                                     </td>
                                     {isAdmin && (
@@ -544,7 +561,7 @@ const Employees = () => {
                                                 <button
                                                     onClick={() => handleOpenEditModal(emp)}
                                                     className="btn btn-icon-only"
-                                                    title="Edit"
+                                                    title="Sửa"
                                                 >
                                                     <svg
                                                         width="16"
@@ -566,7 +583,7 @@ const Employees = () => {
                                                     style={{
                                                         color: "var(--danger)",
                                                     }}
-                                                    title="Delete"
+                                                    title="Xóa"
                                                 >
                                                     <svg
                                                         width="16"
@@ -614,7 +631,7 @@ const Employees = () => {
                         </button>
 
                         <h2 style={{ fontSize: "1.5rem", fontWeight: 700, marginBottom: "20px" }}>
-                            {modalMode === "add" ? "Add New Employee" : "Edit Employee Details"}
+                                {modalMode === "add" ? "Thêm nhân viên mới" : "Chỉnh sửa thông tin nhân viên"}
                         </h2>
 
                         <form onSubmit={handleFormSubmit}>
@@ -646,11 +663,11 @@ const Employees = () => {
                                         value={formData.role}
                                         onChange={handleInputChange}
                                     >
-                                        <option value="Manager">Manager</option>
-                                        <option value="Cashier">Cashier</option>
-                                        <option value="Stocker">Stocker</option>
-                                        <option value="Security">Security</option>
-                                        <option value="Accountant">Accountant</option>
+                                        <option value="Manager">Quản lý (Manager)</option>
+                                        <option value="Cashier">Thu ngân (Cashier)</option>
+                                        <option value="Stocker">Nhân viên kho (Stocker)</option>
+                                        <option value="Security">Bảo vệ (Security)</option>
+                                        <option value="Accountant">Kế toán (Accountant)</option>
                                     </select>
                                 </div>
 
@@ -665,8 +682,8 @@ const Employees = () => {
                                         value={formData.status}
                                         onChange={handleInputChange}
                                     >
-                                        <option value="active">Active</option>
-                                        <option value="inactive">Inactive</option>
+                                        <option value="active">Đang hoạt động</option>
+                                        <option value="inactive">Ngưng hoạt động</option>
                                     </select>
                                 </div>
                             </div>

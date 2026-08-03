@@ -559,64 +559,76 @@ export default function SalesHistory() {
 
             {/* MODAL CHI TIẾT HÓA ĐƠN */}
             {selectedOrder && (
-                <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.6)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000, padding: "20px" }}>
-                    <div style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border-color)", borderRadius: "16px", maxWidth: "520px", width: "100%", padding: "24px", color: "var(--text-main)", boxShadow: "0 20px 25px -5px rgba(0,0,0,0.4)" }}>
+                <div className="modal-overlay" onClick={() => setSelectedOrder(null)}>
+                    <div
+                        className="modal-card"
+                        onClick={(e) => e.stopPropagation()}
+                        style={{
+                            maxWidth: "520px",
+                            maxHeight: "calc(100vh - 40px)",
+                            display: "flex",
+                            flexDirection: "column",
+                            padding: "24px",
+                        }}
+                    >
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", borderBottom: "1px solid var(--border-color)", paddingBottom: "12px" }}>
                             <h3 style={{ margin: 0, fontSize: "18px" }}>🧾 Chi Tiết Hóa Đơn {selectedOrder.id}</h3>
                             <button onClick={() => setSelectedOrder(null)} style={{ background: "none", border: "none", fontSize: "20px", cursor: "pointer", color: "var(--text-muted)" }}>✕</button>
                         </div>
 
-                        <div style={{ fontSize: "14px", lineHeight: "1.6", marginBottom: "16px" }}>
-                            <div><strong>Thời gian:</strong> {formatDate(selectedOrder.createdAt)}</div>
-                            <div><strong>Nhân viên lập:</strong> {selectedOrder.employeeName}</div>
-                        </div>
+                        <div className="modal-scrollable-content" style={{ overflowY: "auto", flex: 1, paddingRight: "8px", marginBottom: "12px" }}>
+                            <div style={{ fontSize: "14px", lineHeight: "1.6", marginBottom: "16px" }}>
+                                <div><strong>Thời gian:</strong> {formatDate(selectedOrder.createdAt)}</div>
+                                <div><strong>Nhân viên lập:</strong> {selectedOrder.employeeName}</div>
+                            </div>
 
-                        <div style={{ marginBottom: "16px" }}>
-                            <div style={{ fontWeight: "700", marginBottom: "8px", fontSize: "14px" }}>Danh sách sản phẩm:</div>
-                            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                                {selectedOrder.items.map((item: OrderItem, i: number) => {
-                                    const cPrice = item.costPrice ?? Math.round(item.price * 0.65);
-                                    const cSubtotal = item.costSubtotal ?? cPrice * item.quantity;
-                                    const pProfit = item.profit ?? item.subtotal - cSubtotal;
+                            <div style={{ marginBottom: "16px" }}>
+                                <div style={{ fontWeight: "700", marginBottom: "8px", fontSize: "14px" }}>Danh sách sản phẩm:</div>
+                                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                                    {selectedOrder.items.map((item: OrderItem, i: number) => {
+                                        const cPrice = item.costPrice ?? Math.round(item.price * 0.65);
+                                        const cSubtotal = item.costSubtotal ?? cPrice * item.quantity;
+                                        const pProfit = item.profit ?? item.subtotal - cSubtotal;
 
-                                    return (
-                                        <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", backgroundColor: "var(--bg-app)", borderRadius: "8px", fontSize: "13px" }}>
-                                            <div>
-                                                <div style={{ fontWeight: "600" }}>{item.name}</div>
-                                                <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>
-                                                    {formatVND(item.price)} x {item.quantity} (Vốn: {formatVND(cPrice)}/món)
+                                        return (
+                                            <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", backgroundColor: "var(--bg-app)", borderRadius: "8px", fontSize: "13px" }}>
+                                                <div>
+                                                    <div style={{ fontWeight: "600" }}>{item.name}</div>
+                                                    <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>
+                                                        {formatVND(item.price)} x {item.quantity} (Vốn: {formatVND(cPrice)}/món)
+                                                    </div>
+                                                </div>
+                                                <div style={{ textAlign: "right" }}>
+                                                    <div style={{ fontWeight: "700" }}>{formatVND(item.subtotal)}</div>
+                                                    <div style={{ fontSize: "11px", color: "#10b981", fontWeight: "600" }}>Lãi: +{formatVND(pProfit)}</div>
                                                 </div>
                                             </div>
-                                            <div style={{ textAlign: "right" }}>
-                                                <div style={{ fontWeight: "700" }}>{formatVND(item.subtotal)}</div>
-                                                <div style={{ fontSize: "11px", color: "#10b981", fontWeight: "600" }}>Lãi: +{formatVND(pProfit)}</div>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            <div style={{ borderTop: "1px dashed var(--border-color)", paddingTop: "12px", fontSize: "14px", display: "flex", flexDirection: "column", gap: "6px" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                    <span>Tổng Doanh Thu:</span>
+                                    <strong style={{ color: "#3b82f6" }}>{formatVND(selectedOrder.total)}</strong>
+                                </div>
+                                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                    <span>Tổng Giá Vốn:</span>
+                                    <strong style={{ color: "#f59e0b" }}>
+                                        {formatVND(selectedOrder.totalCost ?? selectedOrder.items.reduce((s, i) => s + (i.costPrice ?? Math.round(i.price * 0.65)) * i.quantity, 0))}
+                                    </strong>
+                                </div>
+                                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "16px", paddingTop: "6px", borderTop: "1px solid var(--border-color)" }}>
+                                    <span>Lợi Nhuận Thu Về:</span>
+                                    <strong style={{ color: "#10b981" }}>
+                                        +{formatVND(selectedOrder.totalProfit ?? (selectedOrder.total - (selectedOrder.totalCost ?? 0)))}
+                                    </strong>
+                                </div>
                             </div>
                         </div>
 
-                        <div style={{ borderTop: "1px dashed var(--border-color)", paddingTop: "12px", fontSize: "14px", display: "flex", flexDirection: "column", gap: "6px" }}>
-                            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <span>Tổng Doanh Thu:</span>
-                                <strong style={{ color: "#3b82f6" }}>{formatVND(selectedOrder.total)}</strong>
-                            </div>
-                            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <span>Tổng Giá Vốn:</span>
-                                <strong style={{ color: "#f59e0b" }}>
-                                    {formatVND(selectedOrder.totalCost ?? selectedOrder.items.reduce((s, i) => s + (i.costPrice ?? Math.round(i.price * 0.65)) * i.quantity, 0))}
-                                </strong>
-                            </div>
-                            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "16px", paddingTop: "6px", borderTop: "1px solid var(--border-color)" }}>
-                                <span>Lợi Nhuận Thu Về:</span>
-                                <strong style={{ color: "#10b981" }}>
-                                    +{formatVND(selectedOrder.totalProfit ?? (selectedOrder.total - (selectedOrder.totalCost ?? 0)))}
-                                </strong>
-                            </div>
-                        </div>
-
-                        <div style={{ marginTop: "20px", textAlign: "right" }}>
+                        <div style={{ marginTop: "8px", textAlign: "right", borderTop: "1px solid var(--border-color)", paddingTop: "12px" }}>
                             <button onClick={() => setSelectedOrder(null)} className="btn btn-secondary">Đóng</button>
                         </div>
                     </div>

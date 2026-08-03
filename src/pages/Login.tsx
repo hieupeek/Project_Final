@@ -53,7 +53,7 @@ export default function Login() {
                 {/* Header */}
                 <div style={styles.header}>
                     <div style={styles.logoBadge}>🛒</div>
-                    <h1 style={styles.title}>Đăng Nhập System</h1>
+                    <h1 style={styles.title}>Đăng Nhập Hệ Thống</h1>
                     <p style={styles.subtitle}>Hệ thống Quản lý Cửa hàng & Siêu thị</p>
                 </div>
 

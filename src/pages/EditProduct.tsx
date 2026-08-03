@@ -32,7 +32,7 @@ const EditProduct = () => {
                 });
             } catch (error) {
                 console.error("Failed to load product data:", error);
-                alert("Failed to load product information.");
+                alert("Không thể tải thông tin sản phẩm.");
                 navigate("/products");
             } finally {
                 setIsLoading(false);
@@ -57,7 +57,7 @@ const EditProduct = () => {
         e.preventDefault();
 
         if (!product.name || !product.category || !product.price || !product.quantity) {
-            alert("Please fill in all required fields.");
+            alert("Vui lòng nhập đầy đủ các trường bắt buộc.");
             return;
         }
 
@@ -71,7 +71,7 @@ const EditProduct = () => {
             navigate("/products");
         } catch (error) {
             console.error("Failed to update product:", error);
-            alert("An error occurred while updating the product.");
+            alert("Có lỗi xảy ra khi cập nhật sản phẩm.");
         } finally {
             setIsSubmitting(false);
         }
@@ -97,7 +97,7 @@ const EditProduct = () => {
                     }
                 `}</style>
                 <p style={{ marginTop: "16px", color: "var(--text-muted)" }}>
-                    Loading product details...
+                    Đang tải chi tiết sản phẩm...
                 </p>
             </div>
         );
@@ -128,7 +128,7 @@ const EditProduct = () => {
                         <polyline points="12 19 5 12 12 5" />
                     </svg>
                 </Link>
-                <h1 style={{ margin: 0, fontSize: "1.75rem" }}>Edit Product</h1>
+                <h1 style={{ margin: 0, fontSize: "1.75rem" }}>Chỉnh sửa sản phẩm</h1>
             </div>
 
             <div className="image-preview-wrapper">
@@ -168,14 +168,14 @@ const EditProduct = () => {
                         <circle cx="9" cy="9" r="2" />
                         <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
                     </svg>
-                    <span>Image Preview</span>
+                    <span>Xem trước hình ảnh</span>
                 </div>
             </div>
 
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label className="form-label" htmlFor="name">
-                        Product Name *
+                        Tên sản phẩm *
                     </label>
                     <input
                         id="name"
@@ -191,7 +191,7 @@ const EditProduct = () => {
 
                 <div className="form-group">
                     <label className="form-label" htmlFor="category">
-                        Category *
+                        Danh mục *
                     </label>
                     <input
                         id="category"
@@ -208,7 +208,7 @@ const EditProduct = () => {
                 <div className="form-row">
                     <div className="form-group">
                         <label className="form-label" htmlFor="price">
-                            Price (VND) *
+                            Giá bán (VND) *
                         </label>
                         <input
                             id="price"
@@ -225,7 +225,7 @@ const EditProduct = () => {
 
                     <div className="form-group">
                         <label className="form-label" htmlFor="quantity">
-                            Quantity *
+                            Số lượng *
                         </label>
                         <input
                             id="quantity"
@@ -243,7 +243,7 @@ const EditProduct = () => {
 
                 <div className="form-group">
                     <label className="form-label" htmlFor="image">
-                        Image URL
+                        Đường dẫn hình ảnh (URL)
                     </label>
                     <input
                         id="image"
@@ -258,14 +258,14 @@ const EditProduct = () => {
 
                 <div className="form-actions">
                     <Link to="/products" className="btn btn-secondary">
-                        Cancel
+                        Hủy
                     </Link>
                     <button
                         type="submit"
                         className="btn btn-primary"
                         disabled={isSubmitting}
                     >
-                        {isSubmitting ? "Saving..." : "Save Changes"}
+                        {isSubmitting ? "Đang lưu..." : "Lưu thay đổi"}
                     </button>
                 </div>
             </form>

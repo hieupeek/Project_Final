@@ -75,7 +75,7 @@ const AddProduct = () => {
                         <polyline points="12 19 5 12 12 5" />
                     </svg>
                 </Link>
-                <h1 style={{ margin: 0, fontSize: "1.75rem" }}>Add New Product</h1>
+                <h1 style={{ margin: 0, fontSize: "1.75rem" }}>Thêm sản phẩm mới</h1>
             </div>
 
             <div className="image-preview-wrapper">
@@ -115,14 +115,14 @@ const AddProduct = () => {
                         <circle cx="9" cy="9" r="2" />
                         <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
                     </svg>
-                    <span>Image Preview</span>
+                    <span>Xem trước hình ảnh</span>
                 </div>
             </div>
 
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label className="form-label" htmlFor="name">
-                        Product Name *
+                        Tên sản phẩm *
                     </label>
                     <input
                         id="name"
@@ -138,7 +138,7 @@ const AddProduct = () => {
 
                 <div className="form-group">
                     <label className="form-label" htmlFor="category">
-                        Category *
+                        Danh mục *
                     </label>
                     <input
                         id="category"
@@ -155,7 +155,7 @@ const AddProduct = () => {
                 <div className="form-row">
                     <div className="form-group">
                         <label className="form-label" htmlFor="price">
-                            Price (VND) *
+                            Giá bán (VND) *
                         </label>
                         <input
                             id="price"
@@ -172,7 +172,7 @@ const AddProduct = () => {
 
                     <div className="form-group">
                         <label className="form-label" htmlFor="quantity">
-                            Quantity *
+                            Số lượng *
                         </label>
                         <input
                             id="quantity"
@@ -190,7 +190,7 @@ const AddProduct = () => {
 
                 <div className="form-group">
                     <label className="form-label" htmlFor="image">
-                        Image URL
+                        Đường dẫn hình ảnh (URL)
                     </label>
                     <input
                         id="image"
@@ -205,14 +205,14 @@ const AddProduct = () => {
 
                 <div className="form-actions">
                     <Link to="/products" className="btn btn-secondary">
-                        Cancel
+                        Hủy
                     </Link>
                     <button
                         type="submit"
                         className="btn btn-primary"
                         disabled={isSubmitting}
                     >
-                        {isSubmitting ? "Adding..." : "Add Product"}
+                        {isSubmitting ? "Đang thêm..." : "Thêm sản phẩm"}
                     </button>
                 </div>
             </form>

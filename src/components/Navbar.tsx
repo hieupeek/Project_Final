@@ -76,7 +76,7 @@ const Navbar = () => {
                         <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                         <polyline points="9 22 9 12 15 12 15 22" />
                     </svg>
-                    Home
+                    Trang chủ
                 </Link>
 
                 <Link
@@ -100,7 +100,7 @@ const Navbar = () => {
                         <path d="M12 12H2v10h10V12Z" />
                         <path d="M22 12h-10v10h10V12Z" />
                     </svg>
-                    Products
+                    Sản phẩm
                 </Link>
 
                 <Link
@@ -124,7 +124,7 @@ const Navbar = () => {
                         <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
                         <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                     </svg>
-                    Employees
+                    Nhân viên
                 </Link>
 
                 <Link
@@ -193,7 +193,7 @@ const Navbar = () => {
                             <path d="M5 12h14" />
                             <path d="M12 5v14" />
                         </svg>
-                        Add Product
+                        Thêm sản phẩm
                     </Link>
                 )}
 
@@ -309,7 +309,7 @@ const Navbar = () => {
                                 }}
                                 title="Thoát tài khoản"
                             >
-                                🚪 Thoát (Logout)
+                                🚪 Đăng xuất
                             </button>
                         </div>
                     ) : (

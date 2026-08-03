@@ -29,14 +29,14 @@ const Home = () => {
     }, []);
 
     const handleDelete = async (id: number) => {
-        if (!confirm("Are you sure you want to delete this product?")) return;
+        if (!confirm("Bạn có chắc chắn muốn xóa sản phẩm này không?")) return;
 
         try {
             await deleteProduct(id);
             loadData();
         } catch (error) {
             console.error("Failed to delete product:", error);
-            alert("An error occurred while deleting the product.");
+            alert("Có lỗi xảy ra khi xóa sản phẩm.");
         }
     };
 
@@ -71,11 +71,11 @@ const Home = () => {
     // Render stock status badge
     const renderStockBadge = (quantity: number) => {
         if (quantity === 0) {
-            return <span className="badge badge-danger">Out of Stock</span>;
+            return <span className="badge badge-danger">Hết hàng</span>;
         } else if (quantity <= 10) {
-            return <span className="badge badge-warning">Low Stock ({quantity})</span>;
+            return <span className="badge badge-warning">Sắp hết hàng ({quantity})</span>;
         } else {
-            return <span className="badge badge-success">In Stock ({quantity})</span>;
+            return <span className="badge badge-success">Còn hàng ({quantity})</span>;
         }
     };
 
@@ -105,7 +105,7 @@ const Home = () => {
                         <path d="M12 12H2v10h10V12Z" />
                         <path d="M22 12h-10v10h10V12Z" />
                     </svg>
-                    Products Catalog
+                    Danh Mục Sản Phẩm
                 </h1>
                 {isAdmin && (
                     <Link to="/products/add" className="btn btn-primary">
@@ -122,7 +122,7 @@ const Home = () => {
                             <path d="M5 12h14" />
                             <path d="M12 5v14" />
                         </svg>
-                        Add Product
+                        Thêm sản phẩm
                     </Link>
                 )}
             </div>
@@ -146,7 +146,7 @@ const Home = () => {
                         </svg>
                         <input
                             type="text"
-                            placeholder="Search products..."
+                            placeholder="Tìm kiếm sản phẩm..."
                             className="form-control search-input"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -158,7 +158,7 @@ const Home = () => {
                         value={selectedCategory}
                         onChange={(e) => setSelectedCategory(e.target.value)}
                     >
-                        <option value="">All Categories</option>
+                        <option value="">Tất cả danh mục</option>
                         {categories.map((cat) => (
                             <option key={cat} value={cat}>
                                 {cat}
@@ -233,8 +233,8 @@ const Home = () => {
                             <line x1="8" x2="16" y1="12" y2="12" />
                         </svg>
                     </span>
-                    <h2>No products found</h2>
-                    <p>Try adjusting your search query or category filter.</p>
+                    <h2>Không tìm thấy sản phẩm nào</h2>
+                    <p>Hãy thử điều chỉnh từ khóa tìm kiếm hoặc bộ lọc danh mục.</p>
                 </div>
             ) : viewMode === "grid" ? (
                 /* GRID VIEW */
@@ -267,7 +267,7 @@ const Home = () => {
                                         {formatPrice(p.price)}
                                     </span>
                                     <span className="product-card-qty">
-                                        Qty: {p.quantity}
+                                        SL: {p.quantity}
                                     </span>
                                 </div>
                                 {isAdmin && (
@@ -290,7 +290,7 @@ const Home = () => {
                                                 <path d="M12 20h9" />
                                                 <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
                                             </svg>
-                                            Edit
+                                            Sửa
                                         </Link>
                                         <button
                                             onClick={() => handleDelete(p.id)}
@@ -316,7 +316,7 @@ const Home = () => {
                                                 <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
                                                 <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
                                             </svg>
-                                            Delete
+                                            Xóa
                                         </button>
                                     </div>
                                 )}
@@ -330,12 +330,12 @@ const Home = () => {
                     <table className="table">
                         <thead>
                             <tr>
-                                <th>Image</th>
-                                <th>Name</th>
-                                <th>Category</th>
-                                <th>Price</th>
-                                <th>Status</th>
-                                {isAdmin && <th style={{ textAlign: "right" }}>Actions</th>}
+                                <th>Hình ảnh</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Danh mục</th>
+                                <th>Giá bán</th>
+                                <th>Trạng thái</th>
+                                {isAdmin && <th style={{ textAlign: "right" }}>Hành động</th>}
                             </tr>
                         </thead>
                         <tbody>
