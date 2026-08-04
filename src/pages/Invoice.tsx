@@ -105,6 +105,9 @@ const Invoice = () => {
                             <span>Giờ: {formattedTime}</span>
                         </div>
                         <div style={{ fontSize: "0.85rem", color: "#666" }}>Nhân viên: {order.employeeName}</div>
+                        {order.customerName && (
+                            <div style={{ fontSize: "0.85rem", color: "#666", fontWeight: "600" }}>Khách hàng: {order.customerName}</div>
+                        )}
                     </div>
                 </div>
 
@@ -130,9 +133,27 @@ const Invoice = () => {
                         ))}
                     </tbody>
                     <tfoot>
+                        {order.discountAmount && order.discountAmount > 0 ? (
+                            <>
+                                <tr>
+                                    <td colSpan={3} />
+                                    <td className="text-center" style={{ fontSize: "0.9rem", color: "#666" }}>Cộng tiền hàng</td>
+                                    <td className="text-right" style={{ fontSize: "0.9rem", color: "#666" }}>
+                                        {formatPrice(order.total + order.discountAmount)}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colSpan={3} />
+                                    <td className="text-center" style={{ fontSize: "0.9rem", color: "#ef4444" }}>Giảm giá điểm</td>
+                                    <td className="text-right" style={{ fontSize: "0.9rem", color: "#ef4444" }}>
+                                        -{formatPrice(order.discountAmount)}
+                                    </td>
+                                </tr>
+                            </>
+                        ) : null}
                         <tr className="invoice-total-row">
                             <td colSpan={3} />
-                            <td className="text-center"><strong>Tổng cộng</strong></td>
+                            <td className="text-center"><strong>Thực trả</strong></td>
                             <td className="text-right">
                                 <strong>{formatPrice(order.total)}</strong>
                             </td>
@@ -141,6 +162,47 @@ const Invoice = () => {
                 </table>
 
                 <div className="invoice-footer">
+                    {order.customerId && (
+                        <div className="no-print" style={{
+                            margin: "10px auto 15px auto",
+                            padding: "10px 14px",
+                            border: "1px dashed #d97706",
+                            borderRadius: "6px",
+                            backgroundColor: "rgba(217, 119, 6, 0.03)",
+                            fontSize: "0.85rem",
+                            maxWidth: "320px",
+                            textAlign: "left"
+                        }}>
+                            <div style={{ fontWeight: "700", color: "#d97706", marginBottom: "6px", textAlign: "center" }}>
+                                ✨ THÔNG TIN TÍCH ĐIỂM
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
+                                <span>Điểm tích lũy từ đơn:</span>
+                                <strong style={{ color: "#10b981" }}>+{order.pointsEarned || 0}</strong>
+                            </div>
+                            {order.pointsUsed && order.pointsUsed > 0 ? (
+                                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                    <span>Điểm sử dụng giảm giá:</span>
+                                    <strong style={{ color: "#ef4444" }}>-{order.pointsUsed}</strong>
+                                </div>
+                            ) : null}
+                        </div>
+                    )}
+                    {/* Bản in cũng sẽ hiển thị thông tin tích điểm gọn gàng hơn */}
+                    {order.customerId && (
+                        <div className="print-only" style={{
+                            fontSize: "0.8rem",
+                            margin: "8px 0",
+                            textAlign: "left",
+                            borderTop: "1px dashed #ccc",
+                            paddingTop: "6px"
+                        }}>
+                            <div>Điểm tích luỹ từ đơn này: +{order.pointsEarned || 0}</div>
+                            {order.pointsUsed && order.pointsUsed > 0 ? (
+                                <div>Điểm đã sử dụng: -{order.pointsUsed}</div>
+                            ) : null}
+                        </div>
+                    )}
                     <div className="invoice-divider" />
                     <p className="invoice-thanks">Cảm ơn quý khách đã mua hàng!</p>
                     <p className="invoice-note">Hàng đã mua vui lòng kiểm tra trước khi rời quầy.</p>

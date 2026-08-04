@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProducts, updateProduct } from "../services/productService";
 import { createOrder } from "../services/orderService";
+import { getCustomers, updateCustomer, addCustomer } from "../services/customerService";
 import { useAuth } from "../context/AuthContext";
 import type { Product } from "../types/Product";
 import type { OrderItem } from "../types/OrderItem";
+import type { Customer } from "../types/Customer";
 
 const Sales = () => {
     const navigate = useNavigate();
@@ -15,18 +17,45 @@ const Sales = () => {
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
 
+    // Customer loyalty state
+    const [customers, setCustomers] = useState<Customer[]>([]);
+    const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+    const [customerSearch, setCustomerSearch] = useState("");
+    const [usePoints, setUsePoints] = useState(false);
+    const [agreeToEarnPoints, setAgreeToEarnPoints] = useState(false);
+
+    // Quick add customer modal state
+    const [isNewCustModalOpen, setIsNewCustModalOpen] = useState(false);
+    const [newCustName, setNewCustName] = useState("");
+    const [newCustPhone, setNewCustPhone] = useState("");
+    const [newCustEmail, setNewCustEmail] = useState("");
+    const [custSubmitting, setCustSubmitting] = useState(false);
+
+    const fetchCustomers = async () => {
+        try {
+            const data = await getCustomers();
+            setCustomers(data);
+        } catch (error) {
+            console.error("Failed to fetch customers:", error);
+        }
+    };
+
     useEffect(() => {
-        const fetchProducts = async () => {
+        const fetchInitialData = async () => {
             try {
-                const data = await getProducts();
-                setProducts(data);
+                const [productData, customerData] = await Promise.all([
+                    getProducts(),
+                    getCustomers()
+                ]);
+                setProducts(productData);
+                setCustomers(customerData);
             } catch (error) {
-                console.error("Failed to fetch products:", error);
+                console.error("Failed to fetch initial data:", error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchProducts();
+        fetchInitialData();
     }, []);
 
     const filteredProducts = products.filter((p) =>
@@ -103,10 +132,55 @@ const Sales = () => {
 
     const totalAmount = cart.reduce((sum, item) => sum + item.subtotal, 0);
     const totalCostAmount = cart.reduce((sum, item) => sum + (item.costSubtotal || 0), 0);
-    const totalProfitAmount = totalAmount - totalCostAmount;
+
+    // Loyalty points calculation
+    const pointsUsed = agreeToEarnPoints && usePoints && selectedCustomer ? Math.min(selectedCustomer.points, Math.floor(totalAmount / 1000)) : 0;
+    const discountAmount = pointsUsed * 1000;
+    const payableAmount = totalAmount - discountAmount;
+    const pointsEarned = agreeToEarnPoints && selectedCustomer ? Math.floor(payableAmount / 10000) : 0;
+    const totalProfitAmount = payableAmount - totalCostAmount;
 
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat("vi-VN").format(price) + "đ";
+    };
+
+    const handleQuickAddCustomer = async (e: FormEvent) => {
+        e.preventDefault();
+        if (!newCustName || !newCustPhone) {
+            alert("Vui lòng nhập Tên và Số điện thoại!");
+            return;
+        }
+
+        const phoneExists = customers.some((c) => c.phone === newCustPhone);
+        if (phoneExists) {
+            alert("Số điện thoại này đã được đăng ký!");
+            return;
+        }
+
+        setCustSubmitting(true);
+        try {
+            const newCust: Customer = {
+                id: "CUST-" + Date.now(),
+                name: newCustName,
+                phone: newCustPhone,
+                email: newCustEmail || undefined,
+                points: 0,
+                createdAt: new Date().toISOString(),
+            };
+            const created = await addCustomer(newCust);
+            await fetchCustomers();
+            setSelectedCustomer(created);
+            setCustomerSearch(created.phone);
+            setIsNewCustModalOpen(false);
+            setNewCustName("");
+            setNewCustPhone("");
+            setNewCustEmail("");
+        } catch (error) {
+            console.error("Lỗi khi thêm nhanh khách hàng:", error);
+            alert("Không thể tạo tài khoản khách hàng.");
+        } finally {
+            setCustSubmitting(false);
+        }
     };
 
     const handlePrintInvoice = async () => {
@@ -121,16 +195,32 @@ const Sales = () => {
             // 1. Tạo đối tượng Order
             const newOrder = {
                 items: cart,
-                total: totalAmount,
+                total: payableAmount,
                 totalCost: totalCostAmount,
                 totalProfit: totalProfitAmount,
                 createdAt: new Date().toISOString(),
                 employeeId: String(user.id) || "unknown",
                 employeeName: user.name || "Nhân viên",
+                ...(agreeToEarnPoints && selectedCustomer ? {
+                    customerId: selectedCustomer.id,
+                    customerName: selectedCustomer.name,
+                    pointsEarned: pointsEarned,
+                    pointsUsed: pointsUsed,
+                    discountAmount: discountAmount
+                } : {})
             };
 
             // 2. Lưu vào database bảng orders
             const savedOrder = await createOrder(newOrder);
+
+            // 2.5 Cập nhật điểm tích luỹ khách hàng
+            if (agreeToEarnPoints && selectedCustomer) {
+                const newPoints = selectedCustomer.points - pointsUsed + pointsEarned;
+                await updateCustomer(selectedCustomer.id, {
+                    ...selectedCustomer,
+                    points: newPoints
+                });
+            }
 
             // 3. Cập nhật tồn kho sản phẩm trong database
             await Promise.all(
@@ -330,10 +420,181 @@ const Sales = () => {
                                 ))}
                             </div>
 
+                            {/* Checkbox hỏi khách hàng có đồng ý tích điểm hay không */}
+                            <div style={{
+                                padding: "12px 16px",
+                                borderTop: "1px solid var(--border-color, rgba(0,0,0,0.1))",
+                                display: "flex",
+                                alignItems: "center"
+                            }}>
+                                <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontWeight: "600", fontSize: "13.5px", margin: 0 }}>
+                                    <input
+                                        type="checkbox"
+                                        checked={agreeToEarnPoints}
+                                        onChange={(e) => {
+                                            setAgreeToEarnPoints(e.target.checked);
+                                            if (!e.target.checked) {
+                                                setSelectedCustomer(null);
+                                                setCustomerSearch("");
+                                                setUsePoints(false);
+                                            }
+                                        }}
+                                    />
+                                    Khách hàng đồng ý tích điểm?
+                                </label>
+                            </div>
+
+                            {/* Tích điểm khách hàng */}
+                            {agreeToEarnPoints && (
+                                <div className="sales-customer-section" style={{
+                                    padding: "16px",
+                                    borderTop: "1px solid var(--border-color, rgba(0,0,0,0.1))",
+                                    backgroundColor: "var(--bg-card-muted, rgba(0,0,0,0.02))",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    gap: "10px"
+                                }}>
+                                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                        <h3 style={{ fontSize: "14px", fontWeight: "700", display: "flex", alignItems: "center", gap: "6px", margin: 0 }}>
+                                            👤 Khách hàng thân thiết
+                                        </h3>
+                                        {selectedCustomer ? (
+                                            <button
+                                                className="btn btn-secondary"
+                                                style={{ padding: "2px 8px", fontSize: "12px", height: "auto" }}
+                                                onClick={() => {
+                                                    setSelectedCustomer(null);
+                                                    setCustomerSearch("");
+                                                    setUsePoints(false);
+                                                }}
+                                            >
+                                                Bỏ chọn
+                                            </button>
+                                        ) : (
+                                            <button
+                                                className="btn btn-primary"
+                                                style={{ padding: "4px 10px", fontSize: "12px", height: "auto", borderRadius: "14px" }}
+                                                onClick={() => setIsNewCustModalOpen(true)}
+                                            >
+                                                + Thêm nhanh
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    {!selectedCustomer ? (
+                                        <div style={{ position: "relative" }}>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                placeholder="Tìm theo Tên hoặc Số điện thoại..."
+                                                value={customerSearch}
+                                                onChange={(e) => {
+                                                    setCustomerSearch(e.target.value);
+                                                    const found = customers.find(
+                                                        (c) => c.phone === e.target.value || c.name.toLowerCase() === e.target.value.toLowerCase()
+                                                    );
+                                                    if (found) {
+                                                        setSelectedCustomer(found);
+                                                    }
+                                                }}
+                                                style={{ fontSize: "13px" }}
+                                            />
+                                            {customerSearch && !selectedCustomer && (
+                                                <div style={{
+                                                    position: "absolute",
+                                                    bottom: "100%",
+                                                    left: 0,
+                                                    right: 0,
+                                                    backgroundColor: "var(--bg-card, #fff)",
+                                                    border: "1px solid var(--border-color, rgba(0,0,0,0.15))",
+                                                    borderRadius: "8px",
+                                                    maxHeight: "150px",
+                                                    overflowY: "auto",
+                                                    zIndex: 100,
+                                                    boxShadow: "0 -4px 12px rgba(0,0,0,0.15)"
+                                                }}>
+                                                    {customers
+                                                        .filter(c => c.name.toLowerCase().includes(customerSearch.toLowerCase()) || c.phone.includes(customerSearch))
+                                                        .map(c => (
+                                                            <div
+                                                                key={c.id}
+                                                                style={{
+                                                                    padding: "8px 12px",
+                                                                    cursor: "pointer",
+                                                                    fontSize: "13px",
+                                                                    borderBottom: "1px solid var(--border-color, rgba(0,0,0,0.05))",
+                                                                    transition: "background 0.2s"
+                                                                }}
+                                                                onClick={() => {
+                                                                    setSelectedCustomer(c);
+                                                                    setCustomerSearch(c.phone);
+                                                                }}
+                                                            >
+                                                                <strong>{c.name}</strong> - {c.phone} (Điểm: {c.points})
+                                                            </div>
+                                                        ))
+                                                    }
+                                                    {customers.filter(c => c.name.toLowerCase().includes(customerSearch.toLowerCase()) || c.phone.includes(customerSearch)).length === 0 && (
+                                                        <div style={{ padding: "8px 12px", fontSize: "13px", color: "var(--text-muted)" }}>
+                                                            Không tìm thấy khách hàng.
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <div style={{
+                                            padding: "10px",
+                                            borderRadius: "6px",
+                                            backgroundColor: "var(--primary-light, rgba(37, 99, 235, 0.05))",
+                                            border: "1px solid var(--primary, rgba(37, 99, 235, 0.2))",
+                                            fontSize: "13px"
+                                        }}>
+                                            <div style={{ fontWeight: "700", marginBottom: "4px" }}>
+                                                {selectedCustomer.name} - {selectedCustomer.phone}
+                                            </div>
+                                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                                <span>Điểm hiện có: <strong style={{ color: "#d97706" }}>{selectedCustomer.points}</strong></span>
+                                                <span>Tích lũy mới: <strong style={{ color: "#10b981" }}>+{pointsEarned}</strong></span>
+                                            </div>
+                                            {selectedCustomer.points > 0 && (
+                                                <div style={{ marginTop: "8px", paddingTop: "8px", borderTop: "1px dashed var(--border-color, rgba(0,0,0,0.1))" }}>
+                                                    <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontWeight: "600" }}>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={usePoints}
+                                                            onChange={(e) => setUsePoints(e.target.checked)}
+                                                        />
+                                                        Dùng điểm giảm giá (-{formatPrice(discountAmount)})
+                                                    </label>
+                                                    {usePoints && (
+                                                        <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>
+                                                            Dùng {pointsUsed} điểm để giảm {formatPrice(discountAmount)} (1 điểm = 1kđ).
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
                             <div className="sales-cart-footer">
+                                {discountAmount > 0 && (
+                                    <>
+                                        <div className="cart-total" style={{ fontSize: "14px", paddingBottom: "4px", color: "var(--text-muted)" }}>
+                                            <span>Tạm tính</span>
+                                            <span>{formatPrice(totalAmount)}</span>
+                                        </div>
+                                        <div className="cart-total" style={{ fontSize: "14px", paddingBottom: "4px", color: "#ef4444" }}>
+                                            <span>Giảm giá điểm tích lũy</span>
+                                            <span>-{formatPrice(discountAmount)}</span>
+                                        </div>
+                                    </>
+                                )}
                                 <div className="cart-total">
-                                    <span>Tổng cộng</span>
-                                    <span className="cart-total-amount">{formatPrice(totalAmount)}</span>
+                                    <span>{discountAmount > 0 ? "Thực trả" : "Tổng cộng"}</span>
+                                    <span className="cart-total-amount">{formatPrice(payableAmount)}</span>
                                 </div>
                                 <button
                                     className="btn btn-success sales-print-btn"
@@ -361,6 +622,59 @@ const Sales = () => {
                     )}
                 </div>
             </div>
+
+            {/* QUICK ADD CUSTOMER MODAL */}
+            {isNewCustModalOpen && (
+                <div className="modal-overlay" onClick={() => setIsNewCustModalOpen(false)}>
+                    <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+                        <button className="modal-close-btn" onClick={() => setIsNewCustModalOpen(false)} aria-label="Đóng">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="18" x2="6" y1="6" y2="18" />
+                                <line x1="6" x2="18" y1="6" y2="18" />
+                            </svg>
+                        </button>
+                        <h2 style={{ fontSize: "1.4rem", fontWeight: 700, marginBottom: "20px" }}>Đăng ký khách hàng thân thiết</h2>
+                        <form onSubmit={handleQuickAddCustomer}>
+                            <div className="form-group">
+                                <label className="form-label">Tên khách hàng *</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={newCustName}
+                                    onChange={(e) => setNewCustName(e.target.value)}
+                                    placeholder="Nhập họ và tên..."
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Số điện thoại *</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={newCustPhone}
+                                    onChange={(e) => setNewCustPhone(e.target.value)}
+                                    placeholder="Nhập số điện thoại..."
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Email (Tùy chọn)</label>
+                                <input
+                                    type="email"
+                                    className="form-control"
+                                    value={newCustEmail}
+                                    onChange={(e) => setNewCustEmail(e.target.value)}
+                                    placeholder="Nhập địa chỉ email..."
+                                />
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "24px" }}>
+                                <button type="button" className="btn btn-secondary" onClick={() => setIsNewCustModalOpen(false)} disabled={custSubmitting}>Huỷ</button>
+                                <button type="submit" className="btn btn-primary" disabled={custSubmitting}>{custSubmitting ? "Đang lưu..." : "Đăng ký"}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

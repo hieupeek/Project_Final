@@ -9,4 +9,9 @@ export interface Order {
   createdAt: string;
   employeeId: string;
   employeeName: string;
+  customerId?: string;
+  customerName?: string;
+  pointsEarned?: number;
+  pointsUsed?: number;
+  discountAmount?: number;
 }
