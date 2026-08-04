@@ -10,10 +10,10 @@ import AddProduct from "./pages/AddProduct";
 import EditProduct from "./pages/EditProduct";
 import Employees from "./pages/Employees";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
 import Sales from "./pages/Sales";
 import Invoice from "./pages/Invoice";
 import Customers from "./pages/Customers";
+import Profile from "./pages/Profile";
 
 import SalesHistory from "./pages/SalesHistory";
 
@@ -26,10 +26,6 @@ function App() {
                     <Route
                         path="/login"
                         element={<Login />}
-                    />
-                    <Route
-                        path="/register"
-                        element={<Register />}
                     />
 
                     {/* App Layout Routes */}
@@ -72,7 +68,7 @@ function App() {
                         <Route
                             path="employees"
                             element={
-                                <ProtectedRoute>
+                                <ProtectedRoute requireAdmin>
                                     <Employees />
                                 </ProtectedRoute>
                             }
@@ -110,6 +106,15 @@ function App() {
                             element={
                                 <ProtectedRoute>
                                     <SalesHistory />
+                                </ProtectedRoute>
+                            }
+                        />
+
+                        <Route
+                            path="profile"
+                            element={
+                                <ProtectedRoute>
+                                    <Profile />
                                 </ProtectedRoute>
                             }
                         />

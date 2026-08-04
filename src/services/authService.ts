@@ -87,3 +87,19 @@ export const getCurrentUser = (): User | null => {
 export const logoutApi = (): void => {
     localStorage.removeItem(CURRENT_USER_KEY);
 };
+
+export const changePasswordApi = async (userId: string, currentPass: string, newPass: string): Promise<void> => {
+    try {
+        const userRes = await axios.get<User>(`${API}/${userId}`);
+        const user = userRes.data;
+        if (user.password !== currentPass) {
+            throw new Error("Mật khẩu hiện tại không chính xác!");
+        }
+        await axios.patch(`${API}/${userId}`, { password: newPass });
+    } catch (err: unknown) {
+        if (err instanceof Error) {
+            throw err;
+        }
+        throw new Error("Không thể kết nối đến server. Vui lòng kiểm tra json-server!");
+    }
+};

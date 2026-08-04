@@ -3,14 +3,18 @@ import { useNavigate, useParams, Link } from "react-router-dom";
 import {
     getProduct,
     updateProduct,
+    getProducts,
 } from "../services/productService";
 
 const EditProduct = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    
+
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [categories, setCategories] = useState<string[]>([]);
+    const [isNewCategory, setIsNewCategory] = useState(false);
+    const [newCategoryVal, setNewCategoryVal] = useState("");
     const [product, setProduct] = useState<any>({
         name: "",
         category: "",
@@ -22,6 +26,12 @@ const EditProduct = () => {
     useEffect(() => {
         const load = async () => {
             try {
+                // Load existing categories
+                const allProducts = await getProducts();
+                const uniqueCats = Array.from(new Set(allProducts.map((p) => p.category).filter(Boolean)));
+                setCategories(uniqueCats);
+
+                // Load product details
                 const data = await getProduct(Number(id));
                 setProduct({
                     name: data.name || "",
@@ -51,12 +61,33 @@ const EditProduct = () => {
         });
     };
 
+    const handleCategorySelectChange = (
+        e: React.ChangeEvent<HTMLSelectElement>
+    ) => {
+        const val = e.target.value;
+        if (val === "__NEW__") {
+            setIsNewCategory(true);
+            setProduct({ ...product, category: "__NEW__" });
+        } else {
+            setIsNewCategory(false);
+            setProduct({ ...product, category: val });
+        }
+    };
+
+    const handleNewCategoryInputChange = (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        setNewCategoryVal(e.target.value);
+    };
+
     const handleSubmit = async (
         e: React.FormEvent
     ) => {
         e.preventDefault();
 
-        if (!product.name || !product.category || !product.price || !product.quantity) {
+        const finalCategory = isNewCategory ? newCategoryVal.trim() : product.category;
+
+        if (!product.name || !finalCategory || !product.price || !product.quantity) {
             alert("Vui lòng nhập đầy đủ các trường bắt buộc.");
             return;
         }
@@ -65,6 +96,7 @@ const EditProduct = () => {
         try {
             await updateProduct(Number(id), {
                 ...product,
+                category: finalCategory,
                 price: Number(product.price),
                 quantity: Number(product.quantity),
             });
@@ -193,16 +225,33 @@ const EditProduct = () => {
                     <label className="form-label" htmlFor="category">
                         Danh mục *
                     </label>
-                    <input
+                    <select
                         id="category"
                         name="category"
-                        type="text"
-                        placeholder="Category"
                         className="form-control"
                         value={product.category}
-                        onChange={handleChange}
+                        onChange={handleCategorySelectChange}
                         required
-                    />
+                    >
+                        {categories.map((cat) => (
+                            <option key={cat} value={cat}>
+                                {cat}
+                            </option>
+                        ))}
+                        <option value="__NEW__">+ Thêm danh mục mới...</option>
+                    </select>
+
+                    {isNewCategory && (
+                        <input
+                            type="text"
+                            placeholder="Nhập tên danh mục mới..."
+                            className="form-control"
+                            style={{ marginTop: "8px" }}
+                            value={newCategoryVal}
+                            onChange={handleNewCategoryInputChange}
+                            required
+                        />
+                    )}
                 </div>
 
                 <div className="form-row">
@@ -248,7 +297,7 @@ const EditProduct = () => {
                     <input
                         id="image"
                         name="image"
-                        type="url"
+                        type="text"
                         placeholder="Image URL"
                         className="form-control"
                         value={product.image}

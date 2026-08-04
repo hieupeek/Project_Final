@@ -103,29 +103,31 @@ const Navbar = () => {
                     Sản phẩm
                 </Link>
 
-                <Link
-                    to="/employees"
-                    className={`navbar-link ${
-                        location.pathname === "/employees" ? "active" : ""
-                    }`}
-                >
-                    <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                {user?.role === "admin" && (
+                    <Link
+                        to="/employees"
+                        className={`navbar-link ${
+                            location.pathname === "/employees" ? "active" : ""
+                        }`}
                     >
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                        <circle cx="9" cy="7" r="4" />
-                        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                    </svg>
-                    Nhân viên
-                </Link>
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                        Nhân viên
+                    </Link>
+                )}
 
                 <Link
                     to="/customers"
@@ -268,7 +270,8 @@ const Navbar = () => {
                 <div style={{ marginLeft: "10px", display: "flex", alignItems: "center", gap: "12px" }}>
                     {isAuthenticated && user ? (
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                            <div
+                            <Link
+                                to="/profile"
                                 style={{
                                     display: "flex",
                                     alignItems: "center",
@@ -277,7 +280,11 @@ const Navbar = () => {
                                     borderRadius: "30px",
                                     backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.05)",
                                     border: isDark ? "1px solid rgba(255, 255, 255, 0.12)" : "1px solid rgba(0, 0, 0, 0.08)",
+                                    textDecoration: "none",
+                                    color: "inherit",
+                                    cursor: "pointer",
                                 }}
+                                title="Xem hồ sơ & Đổi mật khẩu"
                             >
                                 <img
                                     src={user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`}
@@ -313,7 +320,7 @@ const Navbar = () => {
                                         </span>
                                     </div>
                                 </div>
-                            </div>
+                            </Link>
                             <button
                                 onClick={handleLogout}
                                 style={{
@@ -351,20 +358,6 @@ const Navbar = () => {
                                 }}
                             >
                                 Đăng nhập
-                            </Link>
-                            <Link
-                                to="/register"
-                                style={{
-                                    padding: "6px 14px",
-                                    borderRadius: "8px",
-                                    backgroundColor: "#10b981",
-                                    color: "#ffffff",
-                                    textDecoration: "none",
-                                    fontSize: "14px",
-                                    fontWeight: "600",
-                                }}
-                            >
-                                Đăng ký
                             </Link>
                         </div>
                     )}

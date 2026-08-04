@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { addProduct } from "../services/productService";
+import { addProduct, getProducts } from "../services/productService";
 
 const AddProduct = () => {
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [categories, setCategories] = useState<string[]>([]);
+    const [isNewCategory, setIsNewCategory] = useState(false);
+    const [newCategoryVal, setNewCategoryVal] = useState("");
 
     const [product, setProduct] = useState({
         name: "",
@@ -13,6 +16,26 @@ const AddProduct = () => {
         quantity: "",
         image: "",
     });
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const data = await getProducts();
+                const uniqueCats = Array.from(new Set(data.map((p) => p.category).filter(Boolean)));
+                setCategories(uniqueCats);
+                
+                if (uniqueCats.length > 0) {
+                    setProduct((prev) => ({ ...prev, category: uniqueCats[0] }));
+                } else {
+                    setIsNewCategory(true);
+                    setProduct((prev) => ({ ...prev, category: "__NEW__" }));
+                }
+            } catch (err) {
+                console.error("Failed to load categories:", err);
+            }
+        };
+        fetchCategories();
+    }, []);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement>
@@ -23,24 +46,47 @@ const AddProduct = () => {
         });
     };
 
+    const handleCategorySelectChange = (
+        e: React.ChangeEvent<HTMLSelectElement>
+    ) => {
+        const val = e.target.value;
+        if (val === "__NEW__") {
+            setIsNewCategory(true);
+            setProduct({ ...product, category: "__NEW__" });
+        } else {
+            setIsNewCategory(false);
+            setProduct({ ...product, category: val });
+        }
+    };
+
+    const handleNewCategoryInputChange = (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        setNewCategoryVal(e.target.value);
+    };
+
     const handleSubmit = async (
         e: React.FormEvent
     ) => {
         e.preventDefault();
 
+        const finalCategory = isNewCategory ? newCategoryVal.trim() : product.category;
+
         // Simple validation
-        if (!product.name || !product.category || !product.price || !product.quantity) {
-            alert("Please fill in all required fields.");
+        if (!product.name || !finalCategory || !product.price || !product.quantity) {
+            alert("Vui lòng điền đầy đủ các thông tin bắt buộc.");
             return;
         }
 
         setIsSubmitting(true);
         try {
             await addProduct({
-                ...product,
+                name: product.name,
+                category: finalCategory,
                 price: Number(product.price),
                 quantity: Number(product.quantity),
-            } as any);
+                image: product.image,
+            });
             navigate("/products");
         } catch (error) {
             console.error("Failed to add product:", error);
@@ -140,16 +186,33 @@ const AddProduct = () => {
                     <label className="form-label" htmlFor="category">
                         Danh mục *
                     </label>
-                    <input
+                    <select
                         id="category"
                         name="category"
-                        type="text"
-                        placeholder="e.g. Drink, Snack, Food"
                         className="form-control"
                         value={product.category}
-                        onChange={handleChange}
+                        onChange={handleCategorySelectChange}
                         required
-                    />
+                    >
+                        {categories.map((cat) => (
+                            <option key={cat} value={cat}>
+                                {cat}
+                            </option>
+                        ))}
+                        <option value="__NEW__">+ Thêm danh mục mới...</option>
+                    </select>
+
+                    {isNewCategory && (
+                        <input
+                            type="text"
+                            placeholder="Nhập tên danh mục mới..."
+                            className="form-control"
+                            style={{ marginTop: "8px" }}
+                            value={newCategoryVal}
+                            onChange={handleNewCategoryInputChange}
+                            required
+                        />
+                    )}
                 </div>
 
                 <div className="form-row">

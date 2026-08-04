@@ -13,19 +13,17 @@ export const getProduct = async (id: number): Promise<Product> => {
     return res.data;
 };
 
-export const addProduct = async (product: Product) => {
+export const addProduct = async (product: Omit<Product, "id">) => {
     const res = await axios.get<Product[]>(API);
 
-  
     const maxId = res.data.reduce((max, item) => {
         const id = Number(item.id);
-        return id > max ? id : max;
+        return !isNaN(id) && id > max ? id : max;
     }, 0);
 
-  
     const newProduct = {
         ...product,
-        id: String(maxId + 1),
+        id: maxId + 1,
     };
 
     return axios.post(API, newProduct);

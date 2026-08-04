@@ -5,84 +5,84 @@
       "category": "Drink",
       "price": 12000,
       "costPrice": 8000,
-      "quantity": 41,
+      "quantity": 40,
       "image": "/images/coca-cola.jpg",
-      "id": "1"
+      "id": 1
     },
     {
-      "id": "2",
+      "id": 2,
       "name": "Pepsi",
       "category": "Drink",
       "price": 11000,
       "costPrice": 7500,
-      "quantity": 23,
+      "quantity": 22,
       "image": "/images/pepsi.jpg"
     },
     {
-      "id": "3",
+      "id": 3,
       "name": "Sprite",
       "category": "Drink",
       "price": 10000,
       "costPrice": 6500,
-      "quantity": 22,
+      "quantity": 21,
       "image": "/images/sprite.jpg"
     },
     {
-      "id": "4",
+      "id": 4,
       "name": "Oreo",
       "category": "Snack",
       "price": 25000,
       "costPrice": 16000,
-      "quantity": 18,
+      "quantity": 17,
       "image": "/images/oreo.jpg"
     },
     {
-      "id": "5",
+      "id": 5,
       "name": "Lay's Classic",
       "category": "Snack",
       "price": 18000,
       "costPrice": 12000,
-      "quantity": 33,
+      "quantity": 32,
       "image": "/images/lays.jpg"
     },
     {
-      "id": "6",
+      "id": 6,
       "name": "KitKat",
       "category": "Snack",
       "price": 15000,
       "costPrice": 10000,
-      "quantity": 38,
+      "quantity": 37,
       "image": "/images/kitkat.jpg"
     },
     {
-      "id": "7",
+      "id": 7,
       "name": "Vinamilk Fresh Milk",
       "category": "Dairy",
       "price": 32000,
       "costPrice": 24000,
-      "quantity": 26,
+      "quantity": 25,
       "image": "/images/vinamilk.jpg"
     },
     {
-      "id": "8",
+      "id": 8,
       "name": "TH True Milk",
       "category": "Dairy",
       "price": 34000,
       "costPrice": 25000,
-      "quantity": 20,
+      "quantity": 19,
       "image": "/images/th-true-milk.jpg"
     },
     {
-      "id": "9",
+      "id": 9,
       "name": "Instant Noodles",
       "category": "Food",
       "price": 6000,
       "costPrice": 4000,
-      "quantity": 98,
+      "quantity": 97,
       "image": "/images/haohao.jpg"
     },
     {
-      "id": "10",
+      "id": 10,
       "name": "Rice 5kg",
       "category": "Food",
       "price": 135000,
@@ -91,7 +91,7 @@
       "image": "/images/rice.jpg"
     },
     {
-      "id": "11",
+      "id": 11,
       "name": "Cooking Oil",
       "category": "Food",
       "price": 48000,
@@ -100,7 +100,7 @@
       "image": "/images/cooking-oil.jpg"
     },
     {
-      "id": "12",
+      "id": 12,
       "name": "Mineral Water",
       "category": "Drink",
       "price": 7000,
@@ -114,7 +114,23 @@
       "price": 30000,
       "quantity": 33,
       "image": "https://picsum.photos/100?random=1",
-      "id": "13"
+      "id": 13
+    },
+    {
+      "name": "ưer",
+      "category": "ưer",
+      "price": 123123,
+      "quantity": 22,
+      "image": "",
+      "id": 14
+    },
+    {
+      "name": "ab",
+      "category": "Abc",
+      "price": 123123,
+      "quantity": 12,
+      "image": "",
+      "id": 15
     }
   ],
   "users": [
@@ -133,6 +149,54 @@
       "password": "123",
       "role": "employee",
       "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop"
+    },
+    {
+      "id": "3",
+      "name": "Nguyễn Văn Hùng",
+      "email": "hung.nguyen@supermarket.com",
+      "password": "123",
+      "role": "employee",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop"
+    },
+    {
+      "id": "4",
+      "name": "Trần Thị Mai",
+      "email": "mai.tran@supermarket.com",
+      "password": "123",
+      "role": "employee",
+      "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop"
+    },
+    {
+      "id": "5",
+      "name": "Lê Minh Tuấn",
+      "email": "tuan.le@supermarket.com",
+      "password": "123",
+      "role": "employee",
+      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop"
+    },
+    {
+      "id": "6",
+      "name": "Phạm Hải Yến",
+      "email": "yen.pham@supermarket.com",
+      "password": "123",
+      "role": "employee",
+      "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop"
+    },
+    {
+      "id": "7",
+      "name": "Vũ Hoàng Nam",
+      "email": "nam.vu@supermarket.com",
+      "password": "123",
+      "role": "employee",
+      "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop"
+    },
+    {
+      "name": "Trần Thị Mai333",
+      "email": "mai.33tran@supermarket.com",
+      "password": "1234",
+      "role": "employee",
+      "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop",
+      "id": "6JaLKhwzGEk"
     }
   ],
   "employees": [
@@ -180,6 +244,15 @@
       "phone": "0933 444 555",
       "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop",
       "status": "active"
+    },
+    {
+      "name": "Trần Thị Mai333",
+      "role": "Cashier",
+      "email": "mai.33tran@supermarket.com",
+      "phone": "0912 345 673",
+      "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop",
+      "status": "active",
+      "id": "k231cGguvHY"
     }
   ],
   "orders": [
@@ -824,6 +897,107 @@
       "pointsUsed": 0,
       "discountAmount": 0,
       "id": "hepxdAJGwRQ"
+    },
+    {
+      "items": [
+        {
+          "productId": "1",
+          "name": "Coca Cola",
+          "price": 12000,
+          "costPrice": 8000,
+          "quantity": 1,
+          "subtotal": 12000,
+          "costSubtotal": 8000,
+          "profit": 4000
+        },
+        {
+          "productId": "2",
+          "name": "Pepsi",
+          "price": 11000,
+          "costPrice": 7500,
+          "quantity": 1,
+          "subtotal": 11000,
+          "costSubtotal": 7500,
+          "profit": 3500
+        },
+        {
+          "productId": "3",
+          "name": "Sprite",
+          "price": 10000,
+          "costPrice": 6500,
+          "quantity": 1,
+          "subtotal": 10000,
+          "costSubtotal": 6500,
+          "profit": 3500
+        },
+        {
+          "productId": "4",
+          "name": "Oreo",
+          "price": 25000,
+          "costPrice": 16000,
+          "quantity": 1,
+          "subtotal": 25000,
+          "costSubtotal": 16000,
+          "profit": 9000
+        },
+        {
+          "productId": "5",
+          "name": "Lay's Classic",
+          "price": 18000,
+          "costPrice": 12000,
+          "quantity": 1,
+          "subtotal": 18000,
+          "costSubtotal": 12000,
+          "profit": 6000
+        },
+        {
+          "productId": "6",
+          "name": "KitKat",
+          "price": 15000,
+          "costPrice": 10000,
+          "quantity": 1,
+          "subtotal": 15000,
+          "costSubtotal": 10000,
+          "profit": 5000
+        },
+        {
+          "productId": "7",
+          "name": "Vinamilk Fresh Milk",
+          "price": 32000,
+          "costPrice": 24000,
+          "quantity": 1,
+          "subtotal": 32000,
+          "costSubtotal": 24000,
+          "profit": 8000
+        },
+        {
+          "productId": "8",
+          "name": "TH True Milk",
+          "price": 34000,
+          "costPrice": 25000,
+          "quantity": 1,
+          "subtotal": 34000,
+          "costSubtotal": 25000,
+          "profit": 9000
+        },
+        {
+          "productId": "9",
+          "name": "Instant Noodles",
+          "price": 6000,
+          "costPrice": 4000,
+          "quantity": 1,
+          "subtotal": 6000,
+          "costSubtotal": 4000,
+          "profit": 2000
+        }
+      ],
+      "total": 163000,
+      "totalCost": 113000,
+      "totalProfit": 50000,
+      "createdAt": "2026-08-04T02:43:36.540Z",
+      "employeeId": "2",
+      "employeeName": "Vũ Hoàng Nam (Nhân viên)",
+      "id": "Tlw66Ef5lhI"
     }
   ],
   "customers": [

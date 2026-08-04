@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 import {
     getEmployees,
     addEmployee,
@@ -7,6 +8,8 @@ import {
 } from "../services/employeeService";
 import type { Employee } from "../services/employeeService";
 import { useAuth } from "../context/AuthContext";
+
+const USERS_API = "http://localhost:3000/users";
 
 const Employees = () => {
     const { user } = useAuth();
@@ -32,6 +35,7 @@ const Employees = () => {
         phone: "",
         avatar: "",
         status: "active" as "active" | "inactive",
+        password: "123",
     });
 
     const fetchEmployeesData = async () => {
@@ -75,6 +79,7 @@ const Employees = () => {
             phone: "",
             avatar: "",
             status: "active",
+            password: "123",
         });
         setIsModalOpen(true);
     };
@@ -89,6 +94,7 @@ const Employees = () => {
             phone: employee.phone,
             avatar: employee.avatar,
             status: employee.status,
+            password: "",
         });
         setIsModalOpen(true);
     };
@@ -132,6 +138,19 @@ const Employees = () => {
                     status: formData.status,
                 });
                 setEmployees([newEmp, ...employees]);
+
+                // Tự động tạo tài khoản đăng nhập trong bảng users
+                try {
+                    await axios.post(USERS_API, {
+                        name: formData.name,
+                        email: formData.email,
+                        password: formData.password || "123",
+                        role: "employee",
+                        avatar: finalAvatar,
+                    });
+                } catch (userErr) {
+                    console.error("Cảnh báo: Không thể tạo tài khoản đăng nhập tự động:", userErr);
+                }
             } else if (modalMode === "edit" && editingId !== null) {
                 const updated = await updateEmployee(editingId, {
                     name: formData.name,
@@ -155,10 +174,27 @@ const Employees = () => {
     };
 
     const handleDeleteEmployee = async (id: number, name: string) => {
-        if (confirm(`Bạn có chắc muốn xóa nhân viên ${name}?`)) {
+        if (confirm(`Bạn có chắc muốn xóa nhân viên ${name}? Tài khoản đăng nhập của nhân viên này cũng sẽ bị xóa.`)) {
             try {
+                // Tìm email của nhân viên để xóa tài khoản users tương ứng
+                const empToDelete = employees.find((emp) => emp.id === id);
                 await deleteEmployee(id);
                 setEmployees(employees.filter((emp) => emp.id !== id));
+
+                // Đồng bộ xóa tài khoản đăng nhập trong bảng users
+                if (empToDelete) {
+                    try {
+                        const res = await axios.get(USERS_API, { params: { email: empToDelete.email } });
+                        const matchedUsers = res.data.filter(
+                            (u: { email: string }) => u.email.toLowerCase() === empToDelete.email.toLowerCase()
+                        );
+                        for (const u of matchedUsers) {
+                            await axios.delete(`${USERS_API}/${u.id}`);
+                        }
+                    } catch (userErr) {
+                        console.error("Cảnh báo: Không thể xóa tài khoản đăng nhập tương ứng:", userErr);
+                    }
+                }
             } catch (err: unknown) {
                 console.error("Lỗi khi xóa nhân viên:", err);
                 alert("Không thể xóa nhân viên này. Vui lòng kiểm tra lại backend!");
@@ -734,6 +770,26 @@ const Employees = () => {
                                     onChange={handleInputChange}
                                 />
                             </div>
+
+                            {modalMode === "add" && (
+                                <div className="form-group">
+                                    <label className="form-label" htmlFor="emp-password">
+                                        Mật khẩu đăng nhập
+                                    </label>
+                                    <input
+                                        id="emp-password"
+                                        name="password"
+                                        type="text"
+                                        placeholder="Mật khẩu mặc định: 123"
+                                        className="form-control"
+                                        value={formData.password}
+                                        onChange={handleInputChange}
+                                    />
+                                    <small style={{ color: "var(--text-muted)", fontSize: "12px", marginTop: "4px", display: "block" }}>
+                                        Hệ thống sẽ tự động tạo tài khoản đăng nhập cho nhân viên với email và mật khẩu này.
+                                    </small>
+                                </div>
+                            )}
 
                             <div className="form-actions" style={{ marginBottom: 0, paddingBottom: 0 }}>
                                 <button
