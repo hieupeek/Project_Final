@@ -173,7 +173,7 @@ const Home = () => {
                             viewMode === "grid" ? "active" : ""
                         }`}
                         onClick={() => handleViewChange("grid")}
-                        title="Grid View"
+                        title="Hiển thị dạng lưới"
                     >
                         <svg
                             width="18"
@@ -196,7 +196,7 @@ const Home = () => {
                             viewMode === "table" ? "active" : ""
                         }`}
                         onClick={() => handleViewChange("table")}
-                        title="List View"
+                        title="Hiển thị dạng danh sách"
                     >
                         <svg
                             width="18"
@@ -275,7 +275,7 @@ const Home = () => {
                                         <Link
                                             to={`/products/edit/${p.id}`}
                                             className="btn btn-secondary"
-                                            title="Edit Product"
+                                            title="Chỉnh sửa sản phẩm"
                                         >
                                             <svg
                                                 width="16"
@@ -300,7 +300,7 @@ const Home = () => {
                                                 display: "inline-flex",
                                                 justifyContent: "center",
                                             }}
-                                            title="Delete Product"
+                                            title="Xóa sản phẩm"
                                         >
                                             <svg
                                                 width="16"
@@ -374,7 +374,7 @@ const Home = () => {
                                                 <Link
                                                     to={`/products/edit/${p.id}`}
                                                     className="btn btn-icon-only"
-                                                    title="Edit"
+                                                    title="Sửa"
                                                 >
                                                     <svg
                                                         width="16"
@@ -396,7 +396,7 @@ const Home = () => {
                                                     style={{
                                                         color: "var(--danger)",
                                                     }}
-                                                    title="Delete"
+                                                    title="Xóa"
                                                 >
                                                     <svg
                                                         width="16"

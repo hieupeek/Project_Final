@@ -106,7 +106,7 @@ const AddProduct = () => {
                     marginBottom: "24px",
                 }}
             >
-                <Link to="/products" className="btn btn-icon-only" title="Go back to Products">
+                <Link to="/products" className="btn btn-icon-only" title="Quay lại danh sách sản phẩm">
                     <svg
                         width="18"
                         height="18"

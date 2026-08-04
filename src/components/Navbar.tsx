@@ -226,8 +226,8 @@ const Navbar = () => {
                 <button
                     onClick={toggleTheme}
                     className="theme-toggle"
-                    title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-                    aria-label="Toggle theme"
+                    title={isDark ? "Chuyển sang Giao diện Sáng" : "Chuyển sang Giao diện Tối"}
+                    aria-label="Đổi giao diện"
                 >
                     {isDark ? (
                         <svg
@@ -316,7 +316,7 @@ const Navbar = () => {
                                                 boxShadow: "0 2px 4px rgba(0,0,0,0.15)",
                                             }}
                                         >
-                                            {user.role === "admin" ? "👑 ADMIN" : "🧑‍💼 EMPLOYEE"}
+                                            {user.role === "admin" ? "👑 ADMIN" : "🧑‍💼 NHÂN VIÊN"}
                                         </span>
                                     </div>
                                 </div>

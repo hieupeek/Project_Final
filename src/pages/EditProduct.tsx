@@ -145,7 +145,7 @@ const EditProduct = () => {
                     marginBottom: "24px",
                 }}
             >
-                <Link to="/products" className="btn btn-icon-only" title="Go back to Products">
+                <Link to="/products" className="btn btn-icon-only" title="Quay lại danh sách sản phẩm">
                     <svg
                         width="18"
                         height="18"
@@ -213,7 +213,7 @@ const EditProduct = () => {
                         id="name"
                         name="name"
                         type="text"
-                        placeholder="Name"
+                        placeholder="Ví dụ: Coca Cola"
                         className="form-control"
                         value={product.name}
                         onChange={handleChange}
@@ -263,7 +263,7 @@ const EditProduct = () => {
                             id="price"
                             name="price"
                             type="number"
-                            placeholder="Price"
+                            placeholder="Ví dụ: 15000"
                             className="form-control"
                             value={product.price}
                             onChange={handleChange}
@@ -280,7 +280,7 @@ const EditProduct = () => {
                             id="quantity"
                             name="quantity"
                             type="number"
-                            placeholder="Quantity"
+                            placeholder="Ví dụ: 50"
                             className="form-control"
                             value={product.quantity}
                             onChange={handleChange}
@@ -298,7 +298,7 @@ const EditProduct = () => {
                         id="image"
                         name="image"
                         type="text"
-                        placeholder="Image URL"
+                        placeholder="https://example.com/image.jpg"
                         className="form-control"
                         value={product.image}
                         onChange={handleChange}

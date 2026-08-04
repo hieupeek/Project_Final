@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
@@ -132,14 +132,6 @@ export default function Login() {
                             🧑‍💼 Nhân viên
                         </button>
                     </div>
-                </div>
-
-                {/* Footer Link */}
-                <div style={styles.footer}>
-                    <span>Chưa có tài khoản? </span>
-                    <Link to="/register" style={styles.registerLink}>
-                        Đăng ký tài khoản mới ngay
-                    </Link>
                 </div>
             </div>
         </div>
