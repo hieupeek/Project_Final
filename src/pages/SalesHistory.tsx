@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getOrders, deleteOrder } from "../services/orderService";
+import { useAuth } from "../context/AuthContext";
 import type { Order } from "../types/Order";
 import type { OrderItem } from "../types/OrderItem";
 
@@ -14,6 +15,8 @@ interface ProductSaleStat {
 }
 
 export default function SalesHistory() {
+    const { user } = useAuth();
+    const isEmployee = user?.role === "employee";
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -53,8 +56,13 @@ export default function SalesHistory() {
         }
     };
 
+    // Lọc đơn hàng thuộc về nhân viên hiện tại nếu là employee
+    const userOrders = isEmployee
+        ? orders.filter((o) => o.employeeId === user?.id)
+        : orders;
+
     // Lọc theo thời gian
-    const filteredByTimeOrders = orders.filter((order) => {
+    const filteredByTimeOrders = userOrders.filter((order) => {
         if (timeFilter === "all") return true;
         const orderDate = new Date(order.createdAt);
         const now = new Date();
@@ -179,10 +187,12 @@ export default function SalesHistory() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
                 <div>
                     <h1 style={{ margin: 0, fontSize: "26px", fontWeight: "700", display: "flex", alignItems: "center", gap: "8px" }}>
-                        📊 Lịch Sử Bán Hàng & Thống Kê Lãi Vốn
+                        {isEmployee ? "📊 Lịch Sử Bán Hàng Của Tôi" : "📊 Lịch Sử Bán Hàng & Thống Kê Lãi Vốn"}
                     </h1>
                     <p style={{ margin: "4px 0 0", color: "var(--text-muted)", fontSize: "14px" }}>
-                        Theo dõi doanh thu, tổng vốn nhập hàng, lợi nhuận gộp và top mặt hàng bán chạy.
+                        {isEmployee 
+                            ? "Theo dõi các đơn hàng và danh sách sản phẩm bạn đã bán được."
+                            : "Theo dõi doanh thu, tổng vốn nhập hàng, lợi nhuận gộp và top mặt hàng bán chạy."}
                     </p>
                 </div>
                 <Link to="/sales" className="btn btn-primary" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
@@ -206,43 +216,47 @@ export default function SalesHistory() {
             {!loading && !error && (
                 <>
                     {/* KPI Stat Cards */}
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", marginBottom: "24px" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: isEmployee ? "repeat(auto-fit, minmax(240px, 1fr))" : "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", marginBottom: "24px" }}>
                         {/* Doanh thu */}
                         <div style={kpiCardStyle}>
-                            <div style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: "600" }}>💵 TỔNG DOANH THU</div>
+                            <div style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: "600" }}>{isEmployee ? "💵 DOANH THU CỦA TÔI" : "💵 TỔNG DOANH THU"}</div>
                             <div style={{ fontSize: "22px", fontWeight: "800", color: "#3b82f6", marginTop: "4px" }}>
                                 {formatVND(totalRevenue)}
                             </div>
-                            <div style={{ fontSize: "12px", color: "#94a3b8", marginTop: "4px" }}>{filteredOrders.length} hóa đơn</div>
+                            <div style={{ fontSize: "12px", color: "#94a3b8", marginTop: "4px" }}>{filteredOrders.length} hóa đơn đã lập</div>
                         </div>
 
                         {/* Tổng vốn */}
-                        <div style={kpiCardStyle}>
-                            <div style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: "600" }}>🏭 TỔNG GIÁ VỐN</div>
-                            <div style={{ fontSize: "22px", fontWeight: "800", color: "#f59e0b", marginTop: "4px" }}>
-                                {formatVND(totalCost)}
+                        {!isEmployee && (
+                            <div style={kpiCardStyle}>
+                                <div style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: "600" }}>🏭 TỔNG GIÁ VỐN</div>
+                                <div style={{ fontSize: "22px", fontWeight: "800", color: "#f59e0b", marginTop: "4px" }}>
+                                    {formatVND(totalCost)}
+                                </div>
+                                <div style={{ fontSize: "12px", color: "#94a3b8", marginTop: "4px" }}>Chi phí vốn nhập</div>
                             </div>
-                            <div style={{ fontSize: "12px", color: "#94a3b8", marginTop: "4px" }}>Chi phí vốn nhập</div>
-                        </div>
+                        )}
 
                         {/* Lợi nhuận gộp */}
-                        <div style={{ ...kpiCardStyle, borderLeft: "4px solid #10b981" }}>
-                            <div style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: "600" }}>📈 LỢI NHUẬN GỘP</div>
-                            <div style={{ fontSize: "22px", fontWeight: "800", color: "#10b981", marginTop: "4px" }}>
-                                {formatVND(totalProfit)}
+                        {!isEmployee && (
+                            <div style={{ ...kpiCardStyle, borderLeft: "4px solid #10b981" }}>
+                                <div style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: "600" }}>📈 LỢI NHUẬN GỘP</div>
+                                <div style={{ fontSize: "22px", fontWeight: "800", color: "#10b981", marginTop: "4px" }}>
+                                    {formatVND(totalProfit)}
+                                </div>
+                                <div style={{ fontSize: "12px", color: "#10b981", fontWeight: "600", marginTop: "4px" }}>
+                                    Tỷ suất lợi nhuận: {profitMargin}%
+                                </div>
                             </div>
-                            <div style={{ fontSize: "12px", color: "#10b981", fontWeight: "600", marginTop: "4px" }}>
-                                Tỷ suất lợi nhuận: {profitMargin}%
-                            </div>
-                        </div>
+                        )}
 
                         {/* Sản phẩm bán ra */}
                         <div style={kpiCardStyle}>
-                            <div style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: "600" }}>📦 ĐÃ BÁN RA</div>
+                            <div style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: "600" }}>📦 SỐ LƯỢNG ĐÃ BÁN</div>
                             <div style={{ fontSize: "22px", fontWeight: "800", color: "#8b5cf6", marginTop: "4px" }}>
                                 {totalItemsSold} món
                             </div>
-                            <div style={{ fontSize: "12px", color: "#94a3b8", marginTop: "4px" }}>Sản phẩm xuất kho</div>
+                            <div style={{ fontSize: "12px", color: "#94a3b8", marginTop: "4px" }}>Sản phẩm đã bán</div>
                         </div>
                     </div>
 
@@ -385,9 +399,9 @@ export default function SalesHistory() {
                                                 <th>Thời Gian</th>
                                                 <th>Nhân Viên Lập</th>
                                                 <th>Sản Phẩm Đã Bán</th>
-                                                <th>Giá Vốn</th>
+                                                {!isEmployee && <th>Giá Vốn</th>}
                                                 <th>Doanh Thu</th>
-                                                <th>Lợi Nhuận</th>
+                                                {!isEmployee && <th>Lợi Nhuận</th>}
                                                 <th style={{ textAlign: "right" }}>Thao Tác</th>
                                             </tr>
                                         </thead>
@@ -410,13 +424,17 @@ export default function SalesHistory() {
                                                                 {order.items.map((i) => `${i.name} (x${i.quantity})`).join(", ")}
                                                             </div>
                                                         </td>
-                                                        <td style={{ color: "#f59e0b", fontWeight: "600" }}>
-                                                            {formatVND(orderCost)}
-                                                        </td>
+                                                        {!isEmployee && (
+                                                            <td style={{ color: "#f59e0b", fontWeight: "600" }}>
+                                                                {formatVND(orderCost)}
+                                                            </td>
+                                                        )}
                                                         <td style={{ fontWeight: "700" }}>{formatVND(order.total)}</td>
-                                                        <td style={{ fontWeight: "700", color: "#10b981" }}>
-                                                            +{formatVND(orderProfit)}
-                                                        </td>
+                                                        {!isEmployee && (
+                                                            <td style={{ fontWeight: "700", color: "#10b981" }}>
+                                                                +{formatVND(orderProfit)}
+                                                            </td>
+                                                        )}
                                                         <td style={{ textAlign: "right" }}>
                                                             <div style={{ display: "inline-flex", gap: "6px" }}>
                                                                 <button
@@ -426,13 +444,15 @@ export default function SalesHistory() {
                                                                 >
                                                                     👁️ Chi tiết
                                                                 </button>
-                                                                <button
-                                                                    onClick={() => order.id && handleDeleteOrder(order.id)}
-                                                                    className="btn btn-danger"
-                                                                    style={{ padding: "5px 10px", fontSize: "12px" }}
-                                                                >
-                                                                    🗑️ Xóa
-                                                                </button>
+                                                                {!isEmployee && (
+                                                                    <button
+                                                                        onClick={() => order.id && handleDeleteOrder(order.id)}
+                                                                        className="btn btn-danger"
+                                                                        style={{ padding: "5px 10px", fontSize: "12px" }}
+                                                                    >
+                                                                        🗑️ Xóa
+                                                                    </button>
+                                                                )}
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -513,10 +533,10 @@ export default function SalesHistory() {
                                                 <th># Top</th>
                                                 <th>Mặt Hàng</th>
                                                 <th>Số Lượng Đã Bán</th>
-                                                <th>Tổng Giá Vốn</th>
+                                                {!isEmployee && <th>Tổng Giá Vốn</th>}
                                                 <th>Tổng Doanh Thu</th>
-                                                <th>Lợi Nhuận Thu Về</th>
-                                                <th>Tỷ Lệ Sinh Lời</th>
+                                                {!isEmployee && <th>Lợi Nhuận Thu Về</th>}
+                                                {!isEmployee && <th>Tỷ Lệ Sinh Lời</th>}
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -531,20 +551,26 @@ export default function SalesHistory() {
                                                         <td>
                                                             <span className="badge badge-primary">{stat.totalQuantity} món</span>
                                                         </td>
-                                                        <td style={{ color: "#f59e0b", fontWeight: "600" }}>
-                                                            {formatVND(stat.totalCost)}
-                                                        </td>
+                                                        {!isEmployee && (
+                                                            <td style={{ color: "#f59e0b", fontWeight: "600" }}>
+                                                                {formatVND(stat.totalCost)}
+                                                            </td>
+                                                        )}
                                                         <td style={{ fontWeight: "700", color: "#3b82f6" }}>
                                                             {formatVND(stat.totalRevenue)}
                                                         </td>
-                                                        <td style={{ fontWeight: "700", color: "#10b981" }}>
-                                                            +{formatVND(stat.totalProfit)}
-                                                        </td>
-                                                        <td>
-                                                            <span style={{ padding: "4px 8px", borderRadius: "12px", backgroundColor: "rgba(16, 185, 129, 0.15)", color: "#10b981", fontWeight: "700", fontSize: "12px" }}>
-                                                                {margin}%
-                                                            </span>
-                                                        </td>
+                                                        {!isEmployee && (
+                                                            <td style={{ fontWeight: "700", color: "#10b981" }}>
+                                                                +{formatVND(stat.totalProfit)}
+                                                            </td>
+                                                        )}
+                                                        {!isEmployee && (
+                                                            <td>
+                                                                <span style={{ padding: "4px 8px", borderRadius: "12px", backgroundColor: "rgba(16, 185, 129, 0.15)", color: "#10b981", fontWeight: "700", fontSize: "12px" }}>
+                                                                    {margin}%
+                                                                </span>
+                                                            </td>
+                                                        )}
                                                     </tr>
                                                 );
                                             })}
@@ -595,12 +621,12 @@ export default function SalesHistory() {
                                                 <div>
                                                     <div style={{ fontWeight: "600" }}>{item.name}</div>
                                                     <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>
-                                                        {formatVND(item.price)} x {item.quantity} (Vốn: {formatVND(cPrice)}/món)
+                                                        {formatVND(item.price)} x {item.quantity} {!isEmployee && `(Vốn: ${formatVND(cPrice)}/món)`}
                                                     </div>
                                                 </div>
                                                 <div style={{ textAlign: "right" }}>
                                                     <div style={{ fontWeight: "700" }}>{formatVND(item.subtotal)}</div>
-                                                    <div style={{ fontSize: "11px", color: "#10b981", fontWeight: "600" }}>Lãi: +{formatVND(pProfit)}</div>
+                                                    {!isEmployee && <div style={{ fontSize: "11px", color: "#10b981", fontWeight: "600" }}>Lãi: +{formatVND(pProfit)}</div>}
                                                 </div>
                                             </div>
                                         );
@@ -613,18 +639,22 @@ export default function SalesHistory() {
                                     <span>Tổng Doanh Thu:</span>
                                     <strong style={{ color: "#3b82f6" }}>{formatVND(selectedOrder.total)}</strong>
                                 </div>
-                                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                    <span>Tổng Giá Vốn:</span>
-                                    <strong style={{ color: "#f59e0b" }}>
-                                        {formatVND(selectedOrder.totalCost ?? selectedOrder.items.reduce((s, i) => s + (i.costPrice ?? Math.round(i.price * 0.65)) * i.quantity, 0))}
-                                    </strong>
-                                </div>
-                                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "16px", paddingTop: "6px", borderTop: "1px solid var(--border-color)" }}>
-                                    <span>Lợi Nhuận Thu Về:</span>
-                                    <strong style={{ color: "#10b981" }}>
-                                        +{formatVND(selectedOrder.totalProfit ?? (selectedOrder.total - (selectedOrder.totalCost ?? 0)))}
-                                    </strong>
-                                </div>
+                                {!isEmployee && (
+                                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                        <span>Tổng Giá Vốn:</span>
+                                        <strong style={{ color: "#f59e0b" }}>
+                                            {formatVND(selectedOrder.totalCost ?? selectedOrder.items.reduce((s, i) => s + (i.costPrice ?? Math.round(i.price * 0.65)) * i.quantity, 0))}
+                                        </strong>
+                                    </div>
+                                )}
+                                {!isEmployee && (
+                                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "16px", paddingTop: "6px", borderTop: "1px solid var(--border-color)" }}>
+                                        <span>Lợi Nhuận Thu Về:</span>
+                                        <strong style={{ color: "#10b981" }}>
+                                            +{formatVND(selectedOrder.totalProfit ?? (selectedOrder.total - (selectedOrder.totalCost ?? 0)))}
+                                        </strong>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
