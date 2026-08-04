@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Sales from "./pages/Sales";
 import Invoice from "./pages/Invoice";
+import Customers from "./pages/Customers";
 
 import SalesHistory from "./pages/SalesHistory";
 
@@ -73,6 +74,15 @@ function App() {
                             element={
                                 <ProtectedRoute>
                                     <Employees />
+                                </ProtectedRoute>
+                            }
+                        />
+
+                        <Route
+                            path="customers"
+                            element={
+                                <ProtectedRoute>
+                                    <Customers />
                                 </ProtectedRoute>
                             }
                         />
