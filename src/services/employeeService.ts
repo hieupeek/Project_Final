@@ -1,4 +1,5 @@
 import axios from "axios";
+import { API_BASE_URL } from "../api/config";
 
 export interface Employee {
     id: number;
@@ -10,7 +11,7 @@ export interface Employee {
     status: "active" | "inactive";
 }
 
-const API = "http://localhost:3000/employees";
+const API = `${API_BASE_URL}/employees`;
 
 export const getEmployees = async (): Promise<Employee[]> => {
     const res = await axios.get(API);

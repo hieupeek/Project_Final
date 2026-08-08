@@ -8,8 +8,9 @@ import {
 } from "../services/employeeService";
 import type { Employee } from "../services/employeeService";
 import { useAuth } from "../context/AuthContext";
+import { API_BASE_URL } from "../api/config";
 
-const USERS_API = "http://localhost:3000/users";
+const USERS_API = `${API_BASE_URL}/users`;
 
 const Employees = () => {
     const { user } = useAuth();

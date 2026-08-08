@@ -1,7 +1,8 @@
 import axios from "axios";
 import type { User, LoginCredentials, RegisterData } from "../types/User";
+import { API_BASE_URL } from "../api/config";
 
-const API = "http://localhost:3000/users";
+const API = `${API_BASE_URL}/users`;
 const CURRENT_USER_KEY = "project_final_user";
 
 export const loginApi = async (credentials: LoginCredentials): Promise<User> => {

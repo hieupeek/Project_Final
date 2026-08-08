@@ -1,7 +1,8 @@
 import axios from "axios";
 import type { Customer } from "../types/Customer";
+import { API_BASE_URL } from "../api/config";
 
-const API = "http://localhost:3000/customers";
+const API = `${API_BASE_URL}/customers`;
 
 export const getCustomers = async (): Promise<Customer[]> => {
     const res = await axios.get<Customer[]>(API);

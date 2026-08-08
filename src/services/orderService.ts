@@ -1,7 +1,8 @@
 import axios from "axios";
 import type { Order } from "../types/Order";
+import { API_BASE_URL } from "../api/config";
 
-const API = "http://localhost:3000/orders";
+const API = `${API_BASE_URL}/orders`;
 
 export const getOrders = async (): Promise<Order[]> => {
     const res = await axios.get<Order[]>(API);
