@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getOrders, deleteOrder } from "../services/orderService";
+import { getCustomers } from "../services/customerService";
 import { useAuth } from "../context/AuthContext";
 import type { Order } from "../types/Order";
 import type { OrderItem } from "../types/OrderItem";
+import type { Customer } from "../types/Customer";
 
 interface ProductSaleStat {
     productId: number;
@@ -14,10 +16,21 @@ interface ProductSaleStat {
     totalProfit: number;
 }
 
+interface CustomerRankingStat {
+    customerId?: string;
+    name: string;
+    phone?: string;
+    totalSpend: number;
+    orderCount: number;
+    lastOrderAt: string;
+    points: number;
+}
+
 export default function SalesHistory() {
     const { user } = useAuth();
     const isEmployee = user?.role === "employee";
     const [orders, setOrders] = useState<Order[]>([]);
+    const [customers, setCustomers] = useState<Customer[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
@@ -31,8 +44,9 @@ export default function SalesHistory() {
         try {
             setLoading(true);
             setError(null);
-            const data = await getOrders();
-            setOrders(data.reverse()); // Mới nhất lên đầu
+            const [ordersData, customersData] = await Promise.all([getOrders(), getCustomers()]);
+            setOrders(ordersData.reverse()); // Mới nhất lên đầu
+            setCustomers(customersData);
         } catch (err: unknown) {
             console.error("Lỗi khi tải lịch sử đơn hàng:", err);
             setError("Không thể tải lịch sử bán hàng. Vui lòng kiểm tra json-server!");
@@ -163,6 +177,45 @@ export default function SalesHistory() {
         (a, b) => b.totalRevenue - a.totalRevenue
     );
 
+    const customerRankingMap: Record<string, CustomerRankingStat> = {};
+
+    filteredOrders.forEach((order) => {
+        if (!order.customerId && !order.customerName) return;
+
+        const customerKey = order.customerId || order.customerName || "unknown";
+        const matchedCustomer = order.customerId
+            ? customers.find((customer) => customer.id === order.customerId)
+            : undefined;
+
+        if (!customerRankingMap[customerKey]) {
+            customerRankingMap[customerKey] = {
+                customerId: order.customerId,
+                name: order.customerName || matchedCustomer?.name || "Khách vãng lai",
+                phone: matchedCustomer?.phone || "—",
+                totalSpend: 0,
+                orderCount: 0,
+                lastOrderAt: order.createdAt,
+                points: matchedCustomer?.points ?? 0,
+            };
+        }
+
+        const stat = customerRankingMap[customerKey];
+        stat.totalSpend += order.total;
+        stat.orderCount += 1;
+        if (new Date(order.createdAt) > new Date(stat.lastOrderAt)) {
+            stat.lastOrderAt = order.createdAt;
+        }
+        if (matchedCustomer) {
+            stat.points = matchedCustomer.points;
+            stat.phone = matchedCustomer.phone;
+            stat.name = order.customerName || matchedCustomer.name;
+        }
+    });
+
+    const customerRankingList = Object.values(customerRankingMap)
+        .sort((a, b) => b.totalSpend - a.totalSpend || b.orderCount - a.orderCount)
+        .slice(0, 5);
+
     const formatVND = (amount: number) => {
         return new Intl.NumberFormat("vi-VN", {
             style: "currency",
@@ -190,7 +243,7 @@ export default function SalesHistory() {
                         {isEmployee ? "📊 Lịch Sử Bán Hàng Của Tôi" : "📊 Lịch Sử Bán Hàng & Thống Kê Lãi Vốn"}
                     </h1>
                     <p style={{ margin: "4px 0 0", color: "var(--text-muted)", fontSize: "14px" }}>
-                        {isEmployee 
+                        {isEmployee
                             ? "Theo dõi các đơn hàng và danh sách sản phẩm bạn đã bán được."
                             : "Theo dõi doanh thu, tổng vốn nhập hàng, lợi nhuận gộp và top mặt hàng bán chạy."}
                     </p>
@@ -259,6 +312,34 @@ export default function SalesHistory() {
                             <div style={{ fontSize: "12px", color: "#94a3b8", marginTop: "4px" }}>Sản phẩm đã bán</div>
                         </div>
                     </div>
+
+                    {customerRankingList.length > 0 && (
+                        <div style={{ marginBottom: "24px", backgroundColor: "var(--bg-card)", border: "1px solid var(--border-color)", borderRadius: "14px", padding: "18px", boxShadow: "var(--shadow-sm)" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", gap: "12px", flexWrap: "wrap" }}>
+                                <div>
+                                    <div style={{ fontSize: "15px", fontWeight: "700", color: "var(--text-main)" }}>🏆 Xếp hạng khách hàng nổi bật</div>
+                                    <div style={{ fontSize: "13px", color: "var(--text-muted)" }}>Top 5 khách hàng theo tổng chi tiêu trong phạm vi lọc hiện tại</div>
+                                </div>
+                            </div>
+
+                            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px" }}>
+                                {customerRankingList.map((customer, index) => (
+                                    <div key={`${customer.customerId || customer.name}-${index}`} style={{ border: "1px solid var(--border-color)", borderRadius: "12px", padding: "14px", backgroundColor: "rgba(59, 130, 246, 0.06)" }}>
+                                        <div style={{ fontSize: "12px", fontWeight: "700", color: index === 0 ? "#f59e0b" : index === 1 ? "#94a3b8" : index === 2 ? "#b45309" : "var(--text-muted)" }}>
+                                            {index === 0 ? "🥇 Top 1" : index === 1 ? "🥈 Top 2" : index === 2 ? "🥉 Top 3" : `#${index + 1}`}
+                                        </div>
+                                        <div style={{ fontSize: "16px", fontWeight: "700", marginTop: "6px" }}>{customer.name}</div>
+                                        <div style={{ fontSize: "13px", color: "var(--text-muted)", marginTop: "2px" }}>{customer.phone}</div>
+                                        <div style={{ marginTop: "10px", display: "flex", flexDirection: "column", gap: "4px", fontSize: "13px" }}>
+                                            <div>💸 Chi tiêu: <strong>{formatVND(customer.totalSpend)}</strong></div>
+                                            <div>🛒 Số đơn: <strong>{customer.orderCount}</strong></div>
+                                            {customer.points > 0 && <div>⭐ Điểm tích lũy: <strong>{customer.points}</strong></div>}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Toolbar: Time Filter & Search & Tabs */}
                     <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "12px", marginBottom: "20px", backgroundColor: "var(--bg-card)", padding: "14px 18px", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
@@ -367,13 +448,25 @@ export default function SalesHistory() {
 
                                         <select
                                             value={itemsPerPage}
-                                            onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                                            onChange={(e) => {
+                                                setItemsPerPage(Number(e.target.value));
+                                                setCurrentPage(1);
+                                            }}
                                             className="form-select"
                                             style={{
                                                 width: "90px",
+                                                height: "38px",
+                                                padding: "0 10px",
                                                 textAlign: "center",
                                                 cursor: "pointer",
                                                 fontWeight: "600",
+                                                fontSize: "14px",
+                                                color: "#334155",
+                                                backgroundColor: "#ffffff",
+                                                border: "1px solid #e2e8f0",
+                                                borderRadius: "9px",
+                                                outline: "none",
+                                                boxShadow: "0 1px 2px rgba(0, 0, 0, 0.04)",
                                             }}
                                         >
                                             <option value={5}>5</option>

@@ -168,6 +168,9 @@ const Customers = () => {
 
     // Thống kê sơ bộ
     const totalPoints = customers.reduce((sum, c) => sum + c.points, 0);
+    const topCustomers = [...customers]
+        .sort((a, b) => b.points - a.points)
+        .slice(0, 3);
 
     return (
         <div className="container employees-container">
@@ -235,6 +238,63 @@ const Customers = () => {
                     </span>
                 </div>
             </div>
+
+            {topCustomers.length > 0 && (
+                <div
+                    style={{
+                        marginBottom: "24px",
+                        borderRadius: "18px",
+                        padding: "18px",
+                        background: "linear-gradient(180deg, rgba(59,130,246,0.12) 0%, rgba(255,255,255,0.02) 100%)",
+                        border: "1px solid rgba(59,130,246,0.18)",
+                    }}
+                >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px", marginBottom: "14px" }}>
+                        <div>
+                            <div style={{ fontSize: "15px", fontWeight: 700, color: "var(--text-main)" }}>
+                                🏆 Khách hàng nổi bật
+                            </div>
+                            <div style={{ fontSize: "13px", color: "var(--text-muted)" }}>
+                                Top 3 khách hàng có số điểm tích luỹ cao nhất.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "12px" }}>
+                        {topCustomers.map((cust, idx) => (
+                            <div
+                                key={cust.id}
+                                style={{
+                                    backgroundColor: "rgba(255,255,255,0.04)",
+                                    borderRadius: "14px",
+                                    padding: "16px",
+                                    border: "1px solid rgba(255,255,255,0.08)",
+                                }}
+                            >
+                                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px" }}>
+                                    <div style={{ fontSize: "14px", fontWeight: 700 }}>
+                                        {idx === 0 ? "🥇" : idx === 1 ? "🥈" : "🥉"} {cust.name}
+                                    </div>
+                                    <span style={{ color: "#38bdf8", fontWeight: 700 }}>{cust.points}</span>
+                                </div>
+                                <div style={{ fontSize: "13px", color: "var(--text-muted)", marginBottom: "8px" }}>
+                                    {cust.phone}
+                                </div>
+                                <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", fontSize: "13px" }}>
+                                    <div>
+                                        <div style={{ fontWeight: 600 }}>Đăng ký</div>
+                                        <div style={{ color: "var(--text-muted)" }}>{formatDate(cust.createdAt)}</div>
+                                    </div>
+                                    <div style={{ textAlign: "right" }}>
+                                        <div style={{ fontWeight: 600 }}>Điểm</div>
+                                        <div style={{ color: "#f59e0b" }}>{cust.points}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {/* Thanh lọc & tìm kiếm */}
             <div className="employees-filters" style={{ marginBottom: "20px" }}>

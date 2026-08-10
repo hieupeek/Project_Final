@@ -58,7 +58,7 @@ export default function Profile() {
 
     return (
         <div style={styles.container}>
-            <h1>Hồ Sơ Cá Nhân 🧑‍💼</h1>
+            <h1>Hồ Sơ Cá Nhân </h1>
             
             <div style={styles.grid}>
                 {/* User Info Card */}
