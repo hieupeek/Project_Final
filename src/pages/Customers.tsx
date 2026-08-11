@@ -227,13 +227,13 @@ const Customers = () => {
                     marginBottom: "24px",
                 }}
             >
-                <div className="stat-card" style={{ padding: "16px 20px" }}>
-                    <span className="stat-title">Tổng số khách hàng</span>
-                    <span className="stat-value">{customers.length}</span>
+                <div className="stat-card" style={{ padding: "16px 20px", display: "flex", flexDirection: "column", gap: "6px", backgroundColor: "var(--bg-card)", border: "1px solid var(--border-color)", borderRadius: "12px" }}>
+                    <span className="stat-title" style={{ fontSize: "14px", color: "var(--text-muted)", fontWeight: "500" }}>Tổng số khách hàng</span>
+                    <span className="stat-value" style={{ fontSize: "24px", fontWeight: "800", color: "var(--primary)" }}>{customers.length}</span>
                 </div>
-                <div className="stat-card" style={{ padding: "16px 20px" }}>
-                    <span className="stat-title">Tổng số điểm tích lũy</span>
-                    <span className="stat-value" style={{ color: "#f59e0b" }}>
+                <div className="stat-card" style={{ padding: "16px 20px", display: "flex", flexDirection: "column", gap: "6px", backgroundColor: "var(--bg-card)", border: "1px solid var(--border-color)", borderRadius: "12px" }}>
+                    <span className="stat-title" style={{ fontSize: "14px", color: "var(--text-muted)", fontWeight: "500" }}>Tổng số điểm tích lũy</span>
+                    <span className="stat-value" style={{ fontSize: "24px", fontWeight: "800", color: "#f59e0b" }}>
                         {totalPoints.toLocaleString("vi-VN")}
                     </span>
                 </div>
