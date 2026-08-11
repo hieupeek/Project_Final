@@ -161,6 +161,9 @@ const styles: Record<string, React.CSSProperties> = {
     header: {
         textAlign: "center",
         marginBottom: "28px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
     },
     logoBadge: {
         width: "60px",
@@ -179,11 +182,15 @@ const styles: Record<string, React.CSSProperties> = {
         fontWeight: "700",
         margin: "0 0 6px 0",
         color: "#ffffff",
+        display: "block",
+        textAlign: "center",
+        width: "100%",
     },
     subtitle: {
         fontSize: "14px",
         color: "#94a3b8",
         margin: 0,
+        textAlign: "center",
     },
     errorAlert: {
         backgroundColor: "#451a1a",
