@@ -112,8 +112,6 @@ export default function Login() {
                         {submitting ? "Đang xử lý..." : "Đăng Nhập 🚀"}
                     </button>
                 </form>
-
-                {/* Quick Demo Section */}
                 <div style={styles.demoSection}>
                     <div style={styles.demoTitle}>💡 Đăng nhập nhanh tài khoản mẫu:</div>
                     <div style={styles.demoButtons}>
@@ -122,7 +120,7 @@ export default function Login() {
                             onClick={() => handleQuickLogin("admin@supermarket.com", "123")}
                             style={styles.demoBtnAdmin}
                         >
-                            👑 Admin (Quản trị viên)
+                            👑 Admin
                         </button>
                         <button
                             type="button"
@@ -140,13 +138,15 @@ export default function Login() {
 
 const styles: Record<string, React.CSSProperties> = {
     container: {
-        minHeight: "calc(100vh - 80px)",
+        minHeight: "100vh",
+        width: "100%",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "20px",
+        padding: "24px 20px",
         background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
-        fontFamily: "'Inter', sans-serif",
+        fontFamily: "'Plus Jakarta Sans', system-ui, -apple-system, sans-serif",
+        boxSizing: "border-box",
     },
     card: {
         width: "100%",
@@ -273,34 +273,35 @@ const styles: Record<string, React.CSSProperties> = {
         gap: "10px",
     },
     demoBtnAdmin: {
-        padding: "10px",
-        borderRadius: "8px",
-        backgroundColor: "#312e81",
-        border: "1px solid #4338ca",
-        color: "#c7d2fe",
-        fontSize: "13px",
+        padding: "11px 8px",
+        borderRadius: "10px",
+        backgroundColor: "rgba(99, 102, 241, 0.15)",
+        border: "1px solid rgba(99, 102, 241, 0.4)",
+        color: "#a5b4fc",
+        fontSize: "14px",
         fontWeight: "600",
         cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "6px",
+        textAlign: "center",
+        transition: "all 0.2s ease",
     },
     demoBtnStaff: {
-        padding: "10px",
-        borderRadius: "8px",
-        backgroundColor: "#064e3b",
-        border: "1px solid #047857",
-        color: "#a7f3d0",
-        fontSize: "13px",
+        padding: "11px 8px",
+        borderRadius: "10px",
+        backgroundColor: "rgba(16, 185, 129, 0.15)",
+        border: "1px solid rgba(16, 185, 129, 0.4)",
+        color: "#6ee7b7",
+        fontSize: "14px",
         fontWeight: "600",
         cursor: "pointer",
-    },
-    footer: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "6px",
         textAlign: "center",
-        marginTop: "24px",
-        fontSize: "14px",
-        color: "#94a3b8",
-    },
-    registerLink: {
-        color: "#60a5fa",
-        textDecoration: "none",
-        fontWeight: "600",
+        transition: "all 0.2s ease",
     },
 };
