@@ -5,7 +5,7 @@
       "category": "Drink",
       "price": 12000,
       "costPrice": 8000,
-      "quantity": 40,
+      "quantity": 0,
       "image": "/images/coca-cola.jpg",
       "id": "1"
     },
@@ -15,7 +15,7 @@
       "category": "Drink",
       "price": 11000,
       "costPrice": 7500,
-      "quantity": 22,
+      "quantity": 9,
       "image": "/images/pepsi.jpg"
     },
     {
@@ -24,7 +24,7 @@
       "category": "Drink",
       "price": 10000,
       "costPrice": 6500,
-      "quantity": 21,
+      "quantity": 15,
       "image": "/images/sprite.jpg"
     },
     {
@@ -33,7 +33,7 @@
       "category": "Snack",
       "price": 25000,
       "costPrice": 16000,
-      "quantity": 17,
+      "quantity": 10,
       "image": "/images/oreo.jpg"
     },
     {
@@ -51,7 +51,7 @@
       "category": "Snack",
       "price": 15000,
       "costPrice": 10000,
-      "quantity": 37,
+      "quantity": 36,
       "image": "/images/kitkat.jpg"
     },
     {
@@ -114,7 +114,7 @@
       "price": 30000,
       "quantity": 33,
       "image": "https://picsum.photos/100?random=1",
-      "id": 13
+      "id": "13"
     },
     {
       "name": "ưer",
@@ -122,7 +122,7 @@
       "price": 123123,
       "quantity": 22,
       "image": "",
-      "id": 14
+      "id": "14"
     },
     {
       "name": "ab",
@@ -130,7 +130,7 @@
       "price": 123123,
       "quantity": 12,
       "image": "",
-      "id": 15
+      "id": "15"
     }
   ],
   "users": [
@@ -650,7 +650,7 @@
       "createdAt": "2026-08-03T10:04:05.145Z",
       "employeeId": "1",
       "employeeName": "Nguyễn Hoàng Nam (Admin)",
-      "customerId": "3-z4Pka2m1s",
+      "customerId": null,
       "customerName": "nam",
       "pointsEarned": 1,
       "pointsUsed": 0,
@@ -891,7 +891,7 @@
       "createdAt": "2026-08-03T10:04:38.421Z",
       "employeeId": "1",
       "employeeName": "Nguyễn Hoàng Nam (Admin)",
-      "customerId": "3-z4Pka2m1s",
+      "customerId": null,
       "customerName": "nam",
       "pointsEarned": 55,
       "pointsUsed": 0,
@@ -998,6 +998,212 @@
       "employeeId": "2",
       "employeeName": "Vũ Hoàng Nam (Nhân viên)",
       "id": "Tlw66Ef5lhI"
+    },
+    {
+      "items": [
+        {
+          "productId": "1",
+          "name": "Coca Cola",
+          "price": 12000,
+          "costPrice": 8000,
+          "quantity": 12,
+          "subtotal": 144000,
+          "costSubtotal": 96000,
+          "profit": 48000
+        },
+        {
+          "productId": "2",
+          "name": "Pepsi",
+          "price": 11000,
+          "costPrice": 7500,
+          "quantity": 10,
+          "subtotal": 110000,
+          "costSubtotal": 75000,
+          "profit": 35000
+        },
+        {
+          "productId": "3",
+          "name": "Sprite",
+          "price": 10000,
+          "costPrice": 6500,
+          "quantity": 6,
+          "subtotal": 60000,
+          "costSubtotal": 39000,
+          "profit": 21000
+        },
+        {
+          "productId": "4",
+          "name": "Oreo",
+          "price": 25000,
+          "costPrice": 16000,
+          "quantity": 6,
+          "subtotal": 150000,
+          "costSubtotal": 96000,
+          "profit": 54000
+        }
+      ],
+      "total": 464000,
+      "totalCost": 306000,
+      "totalProfit": 158000,
+      "createdAt": "2026-08-05T02:34:32.356Z",
+      "employeeId": "1",
+      "employeeName": "Nguyễn Hoàng Nam (Admin)",
+      "customerId": "dsGjxAvkrdo",
+      "customerName": "Vũ Quang Hiếu Siêu Múp Rụp",
+      "pointsEarned": 46,
+      "pointsUsed": 0,
+      "discountAmount": 0,
+      "id": "Y1XitM3Kkis"
+    },
+    {
+      "items": [
+        {
+          "productId": "1",
+          "name": "Coca Cola",
+          "price": 12000,
+          "costPrice": 8000,
+          "quantity": 1,
+          "subtotal": 12000,
+          "costSubtotal": 8000,
+          "profit": 4000
+        },
+        {
+          "productId": "2",
+          "name": "Pepsi",
+          "price": 11000,
+          "costPrice": 7500,
+          "quantity": 1,
+          "subtotal": 11000,
+          "costSubtotal": 7500,
+          "profit": 3500
+        }
+      ],
+      "total": 0,
+      "totalCost": 15500,
+      "totalProfit": -15500,
+      "createdAt": "2026-08-11T02:40:58.818Z",
+      "employeeId": "1",
+      "employeeName": "Nguyễn Hoàng Nam (Admin)",
+      "customerId": "r1JHlzkob0g",
+      "customerName": "Nguyễn Hoàng Nam (Admin)",
+      "pointsEarned": 0,
+      "pointsUsed": 23,
+      "discountAmount": 23000,
+      "id": "AnynIIwOVqQ"
+    },
+    {
+      "items": [
+        {
+          "productId": "1",
+          "name": "Coca Cola",
+          "price": 12000,
+          "costPrice": 8000,
+          "quantity": 1,
+          "subtotal": 12000,
+          "costSubtotal": 8000,
+          "profit": 4000
+        }
+      ],
+      "total": 12000,
+      "totalCost": 8000,
+      "totalProfit": 4000,
+      "createdAt": "2026-08-11T02:46:42.207Z",
+      "employeeId": "1",
+      "employeeName": "Nguyễn Hoàng Nam (Admin)",
+      "customerId": "dsGjxAvkrdo",
+      "customerName": "Vũ Quang Hiếu Siêu Múp Rụp",
+      "pointsEarned": 1,
+      "pointsUsed": 0,
+      "discountAmount": 0,
+      "id": "_pAhKwnOZL0"
+    },
+    {
+      "items": [
+        {
+          "productId": "4",
+          "name": "Oreo",
+          "price": 25000,
+          "costPrice": 16000,
+          "quantity": 1,
+          "subtotal": 25000,
+          "costSubtotal": 16000,
+          "profit": 9000
+        },
+        {
+          "productId": "6",
+          "name": "KitKat",
+          "price": 15000,
+          "costPrice": 10000,
+          "quantity": 1,
+          "subtotal": 15000,
+          "costSubtotal": 10000,
+          "profit": 5000
+        }
+      ],
+      "total": 35000,
+      "totalCost": 26000,
+      "totalProfit": 9000,
+      "createdAt": "2026-08-11T02:51:26.414Z",
+      "employeeId": "1",
+      "employeeName": "Nguyễn Hoàng Nam (Admin)",
+      "customerId": "r1JHlzkob0g",
+      "customerName": "Nguyễn Hoàng Nam (Admin)",
+      "pointsEarned": 3,
+      "pointsUsed": 5,
+      "discountAmount": 5000,
+      "id": "V8V-VKeqNV8"
+    },
+    {
+      "items": [
+        {
+          "productId": "1",
+          "name": "Coca Cola",
+          "price": 12000,
+          "costPrice": 8000,
+          "quantity": 26,
+          "subtotal": 312000,
+          "costSubtotal": 208000,
+          "profit": 104000
+        }
+      ],
+      "total": 312000,
+      "totalCost": 208000,
+      "totalProfit": 104000,
+      "createdAt": "2026-08-11T02:53:57.716Z",
+      "employeeId": "1",
+      "employeeName": "Nguyễn Hoàng Nam (Admin)",
+      "customerId": "dsGjxAvkrdo",
+      "customerName": "Vũ Quang Hiếu Siêu Múp Rụp",
+      "pointsEarned": 31,
+      "pointsUsed": 0,
+      "discountAmount": 0,
+      "id": "zCF-YiUtcwo"
+    },
+    {
+      "items": [
+        {
+          "productId": "2",
+          "name": "Pepsi",
+          "price": 11000,
+          "costPrice": 7500,
+          "quantity": 2,
+          "subtotal": 22000,
+          "costSubtotal": 15000,
+          "profit": 7000
+        }
+      ],
+      "total": 0,
+      "totalCost": 15000,
+      "totalProfit": -15000,
+      "createdAt": "2026-08-11T02:55:23.083Z",
+      "employeeId": "1",
+      "employeeName": "Nguyễn Hoàng Nam (Admin)",
+      "customerId": "dsGjxAvkrdo",
+      "customerName": "Vũ Quang Hiếu Siêu Múp Rụp",
+      "pointsEarned": 0,
+      "pointsUsed": 22,
+      "discountAmount": 22000,
+      "id": "38JdiYrhcA4"
     }
   ],
   "customers": [
@@ -1018,12 +1224,20 @@
       "createdAt": "2026-08-02T00:00:00.000Z"
     },
     {
-      "id": "3-z4Pka2m1s",
-      "name": "nam",
+      "id": "dsGjxAvkrdo",
+      "name": "Vũ Quang Hiếu Siêu Múp Rụp",
+      "phone": "0286856288",
+      "email": "sjdfkgsdfh@gmail.com",
+      "points": 10,
+      "createdAt": "2026-08-05T02:34:18.056Z"
+    },
+    {
+      "id": "r1JHlzkob0g",
+      "name": "Nguyễn Hoàng Nam (Admin)",
       "phone": "0387874229",
-      "email": "hoangnamnmg@gmail.com",
-      "points": 56,
-      "createdAt": "2026-08-03T10:04:03.191Z"
+      "email": "admin@supermarket.com",
+      "points": 75,
+      "createdAt": "2026-08-11T02:37:15.324Z"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

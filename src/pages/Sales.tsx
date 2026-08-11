@@ -24,6 +24,7 @@ const Sales = () => {
     const [customerSearch, setCustomerSearch] = useState("");
     const [usePoints, setUsePoints] = useState(false);
     const [agreeToEarnPoints, setAgreeToEarnPoints] = useState(false);
+    const [pointsInput, setPointsInput] = useState<string>("");
 
     // Quick add customer modal state
     const [isNewCustModalOpen, setIsNewCustModalOpen] = useState(false);
@@ -134,15 +135,42 @@ const Sales = () => {
     const totalAmount = cart.reduce((sum, item) => sum + item.subtotal, 0);
     const totalCostAmount = cart.reduce((sum, item) => sum + (item.costSubtotal || 0), 0);
 
+    const formatPrice = (price: number) => {
+        return new Intl.NumberFormat("vi-VN").format(price) + "đ";
+    };
+
     // Loyalty points calculation
-    const pointsUsed = agreeToEarnPoints && usePoints && selectedCustomer ? Math.min(selectedCustomer.points, Math.floor(totalAmount / 1000)) : 0;
+    let pointsUsed = 0;
+    let pointsError = "";
+
+    if (usePoints && selectedCustomer) {
+        const parsedPoints = parseInt(pointsInput, 10);
+        if (pointsInput === "") {
+            pointsError = "Vui lòng nhập số điểm muốn đổi";
+        } else if (isNaN(parsedPoints) || parsedPoints <= 0) {
+            pointsError = "Số điểm nhập phải là số nguyên dương lớn hơn 0";
+        } else if (parsedPoints > selectedCustomer.points) {
+            pointsError = `Số điểm nhập không được vượt quá số điểm khách hàng đang có (${selectedCustomer.points})`;
+        } else if (parsedPoints * 1000 < 1000) {
+            pointsError = "Số điểm quy đổi không được dưới 1,000đ (tối thiểu 1 điểm)";
+        } else if (parsedPoints * 1000 > totalAmount) {
+            pointsError = `Số điểm quy đổi không được vượt quá tổng giá trị đơn hàng (${formatPrice(totalAmount)})`;
+        } else {
+            pointsUsed = parsedPoints;
+        }
+    }
+
     const discountAmount = pointsUsed * 1000;
     const payableAmount = totalAmount - discountAmount;
     const pointsEarned = agreeToEarnPoints && selectedCustomer ? Math.floor(payableAmount / 10000) : 0;
     const totalProfitAmount = payableAmount - totalCostAmount;
 
-    const formatPrice = (price: number) => {
-        return new Intl.NumberFormat("vi-VN").format(price) + "đ";
+    const handleSelectCustomer = (customer: Customer) => {
+        setSelectedCustomer(customer);
+        setCustomerSearch(customer.phone);
+        if (usePoints) {
+            setPointsInput(String(Math.min(customer.points, Math.floor(totalAmount / 1000))));
+        }
     };
 
     const handleQuickAddCustomer = async (e: FormEvent) => {
@@ -170,8 +198,7 @@ const Sales = () => {
             };
             const created = await addCustomer(newCust);
             await fetchCustomers();
-            setSelectedCustomer(created);
-            setCustomerSearch(created.phone);
+            handleSelectCustomer(created);
             setIsNewCustModalOpen(false);
             setNewCustName("");
             setNewCustPhone("");
@@ -202,7 +229,7 @@ const Sales = () => {
                 createdAt: new Date().toISOString(),
                 employeeId: String(user.id) || "unknown",
                 employeeName: user.name || "Nhân viên",
-                ...(agreeToEarnPoints && selectedCustomer ? {
+                ...((agreeToEarnPoints || usePoints) && selectedCustomer ? {
                     customerId: selectedCustomer.id,
                     customerName: selectedCustomer.name,
                     pointsEarned: pointsEarned,
@@ -215,7 +242,7 @@ const Sales = () => {
             const savedOrder = await createOrder(newOrder);
 
             // 2.5 Cập nhật điểm tích luỹ khách hàng
-            if (agreeToEarnPoints && selectedCustomer) {
+            if ((agreeToEarnPoints || usePoints) && selectedCustomer) {
                 const newPoints = selectedCustomer.points - pointsUsed + pointsEarned;
                 await updateCustomer(selectedCustomer.id, {
                     ...selectedCustomer,
@@ -421,12 +448,13 @@ const Sales = () => {
                                 ))}
                             </div>
 
-                            {/* Checkbox hỏi khách hàng có đồng ý tích điểm hay không */}
+                            {/* Hai tùy chọn tích điểm và đổi điểm độc lập */}
                             <div style={{
                                 padding: "12px 16px",
                                 borderTop: "1px solid var(--border-color, rgba(0,0,0,0.1))",
                                 display: "flex",
-                                alignItems: "center"
+                                flexDirection: "column",
+                                gap: "8px"
                             }}>
                                 <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontWeight: "600", fontSize: "13.5px", margin: 0 }}>
                                     <input
@@ -434,19 +462,40 @@ const Sales = () => {
                                         checked={agreeToEarnPoints}
                                         onChange={(e) => {
                                             setAgreeToEarnPoints(e.target.checked);
-                                            if (!e.target.checked) {
+                                            if (!e.target.checked && !usePoints) {
                                                 setSelectedCustomer(null);
                                                 setCustomerSearch("");
-                                                setUsePoints(false);
+                                                setPointsInput("");
                                             }
                                         }}
                                     />
-                                    Khách hàng đồng ý tích điểm?
+                                    Khách hàng muốn tích điểm?
+                                </label>
+                                <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontWeight: "600", fontSize: "13.5px", margin: 0 }}>
+                                    <input
+                                        type="checkbox"
+                                        checked={usePoints}
+                                        onChange={(e) => {
+                                            setUsePoints(e.target.checked);
+                                            if (e.target.checked) {
+                                                if (selectedCustomer) {
+                                                    setPointsInput(String(Math.min(selectedCustomer.points, Math.floor(totalAmount / 1000))));
+                                                }
+                                            } else {
+                                                setPointsInput("");
+                                                if (!agreeToEarnPoints) {
+                                                    setSelectedCustomer(null);
+                                                    setCustomerSearch("");
+                                                }
+                                            }
+                                        }}
+                                    />
+                                    Khách hàng muốn đổi điểm?
                                 </label>
                             </div>
 
-                            {/* Tích điểm khách hàng */}
-                            {agreeToEarnPoints && (
+                            {/* Phần khách hàng thân thiết */}
+                            {(agreeToEarnPoints || usePoints) && (
                                 <div className="sales-customer-section" style={{
                                     padding: "16px",
                                     borderTop: "1px solid var(--border-color, rgba(0,0,0,0.1))",
@@ -467,6 +516,7 @@ const Sales = () => {
                                                     setSelectedCustomer(null);
                                                     setCustomerSearch("");
                                                     setUsePoints(false);
+                                                    setPointsInput("");
                                                 }}
                                             >
                                                 Bỏ chọn
@@ -495,7 +545,7 @@ const Sales = () => {
                                                         (c) => c.phone === e.target.value || c.name.toLowerCase() === e.target.value.toLowerCase()
                                                     );
                                                     if (found) {
-                                                        setSelectedCustomer(found);
+                                                        handleSelectCustomer(found);
                                                     }
                                                 }}
                                                 style={{ fontSize: "13px" }}
@@ -527,8 +577,7 @@ const Sales = () => {
                                                                     transition: "background 0.2s"
                                                                 }}
                                                                 onClick={() => {
-                                                                    setSelectedCustomer(c);
-                                                                    setCustomerSearch(c.phone);
+                                                                    handleSelectCustomer(c);
                                                                 }}
                                                             >
                                                                 <strong>{c.name}</strong> - {c.phone} (Điểm: {c.points})
@@ -554,23 +603,43 @@ const Sales = () => {
                                             <div style={{ fontWeight: "700", marginBottom: "4px" }}>
                                                 {selectedCustomer.name} - {selectedCustomer.phone}
                                             </div>
-                                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                                <span>Điểm hiện có: <strong style={{ color: "#d97706" }}>{selectedCustomer.points}</strong></span>
-                                                <span>Tích lũy mới: <strong style={{ color: "#10b981" }}>+{pointsEarned}</strong></span>
+                                            <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                                                <div>Điểm hiện có: <strong style={{ color: "#d97706" }}>{selectedCustomer.points}</strong></div>
+                                                {agreeToEarnPoints && (
+                                                    <div>Tích lũy mới: <strong style={{ color: "#10b981" }}>+{pointsEarned}</strong></div>
+                                                )}
                                             </div>
-                                            {selectedCustomer.points > 0 && (
+                                            {usePoints && (
                                                 <div style={{ marginTop: "8px", paddingTop: "8px", borderTop: "1px dashed var(--border-color, rgba(0,0,0,0.1))" }}>
-                                                    <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontWeight: "600" }}>
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={usePoints}
-                                                            onChange={(e) => setUsePoints(e.target.checked)}
-                                                        />
-                                                        Dùng điểm giảm giá (-{formatPrice(discountAmount)})
-                                                    </label>
-                                                    {usePoints && (
-                                                        <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>
-                                                            Dùng {pointsUsed} điểm để giảm {formatPrice(discountAmount)} (1 điểm = 1kđ).
+                                                    {selectedCustomer.points <= 0 ? (
+                                                        <div style={{ color: "#ef4444", fontSize: "12px", fontWeight: "600" }}>
+                                                            ⚠️ Khách hàng hiện không có điểm để quy đổi.
+                                                        </div>
+                                                    ) : (
+                                                        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                                                            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                                                <span style={{ fontSize: "13px", fontWeight: "600" }}>Số điểm muốn đổi:</span>
+                                                                <input
+                                                                    type="number"
+                                                                    className="form-control"
+                                                                    style={{ width: "90px", padding: "4px 8px", fontSize: "13px", height: "auto" }}
+                                                                    value={pointsInput}
+                                                                    min="1"
+                                                                    max={selectedCustomer.points}
+                                                                    onChange={(e) => setPointsInput(e.target.value)}
+                                                                />
+                                                                <span style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: "600" }}>
+                                                                    (Quy đổi: -{formatPrice(discountAmount)})
+                                                                </span>
+                                                            </div>
+                                                            <span style={{ fontSize: "11px", color: "var(--text-muted)" }}>
+                                                                Tỷ lệ: 1 điểm = 1,000đ. Tối đa có thể đổi {Math.min(selectedCustomer.points, Math.floor(totalAmount / 1000))} điểm.
+                                                            </span>
+                                                            {pointsError && (
+                                                                <div style={{ color: "#ef4444", fontSize: "12px", fontWeight: "600", marginTop: "2px" }}>
+                                                                    ⚠️ {pointsError}
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     )}
                                                 </div>
@@ -600,7 +669,7 @@ const Sales = () => {
                                 <button
                                     className="btn btn-success sales-print-btn"
                                     onClick={handlePrintInvoice}
-                                    disabled={submitting}
+                                    disabled={submitting || (usePoints && !!pointsError)}
                                 >
                                     {submitting ? (
                                         <>
