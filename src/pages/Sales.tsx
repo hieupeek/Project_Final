@@ -104,7 +104,12 @@ const Sales = () => {
         });
     };
 
-    const updateQuantity = (productId: number, delta: number) => {
+    const getStockForCartItem = (productId: number | string) => {
+        const product = products.find((p) => p.id === productId);
+        return product ? product.quantity : 0;
+    };
+
+    const updateQuantity = (productId: number | string, delta: number) => {
         setCart((prev) => {
             return prev
                 .map((item) => {
@@ -128,7 +133,7 @@ const Sales = () => {
         });
     };
 
-    const removeFromCart = (productId: number) => {
+    const removeFromCart = (productId: number | string) => {
         setCart((prev) => prev.filter((item) => item.productId !== productId));
     };
 
@@ -274,10 +279,6 @@ const Sales = () => {
         }
     };
 
-    const getStockForCartItem = (productId: number) => {
-        const product = products.find((p) => p.id === productId);
-        return product ? product.quantity : 0;
-    };
 
     return (
         <div className="container sales-container">

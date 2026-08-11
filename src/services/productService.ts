@@ -9,7 +9,7 @@ export const getProducts = async (): Promise<Product[]> => {
     return res.data;
 };
 
-export const getProduct = async (id: number): Promise<Product> => {
+export const getProduct = async (id: number | string): Promise<Product> => {
     const res = await axios.get(`${API}/${id}`);
     return res.data;
 };
@@ -24,19 +24,19 @@ export const addProduct = async (product: Omit<Product, "id">) => {
 
     const newProduct = {
         ...product,
-        id: maxId + 1,
+        id: String(maxId + 1),
     };
 
     return axios.post(API, newProduct);
 };
 
 export const updateProduct = async (
-    id: number,
+    id: number | string,
     product: Product
 ) => {
     return axios.put(`${API}/${id}`, product);
 };
 
-export const deleteProduct = async (id: number) => {
+export const deleteProduct = async (id: number | string) => {
     return axios.delete(`${API}/${id}`);
 };

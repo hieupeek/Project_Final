@@ -28,7 +28,7 @@ const Home = () => {
         loadData();
     }, []);
 
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: number | string) => {
         if (!confirm("Bạn có chắc chắn muốn xóa sản phẩm này không?")) return;
 
         try {

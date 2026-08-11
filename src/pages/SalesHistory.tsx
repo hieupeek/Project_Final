@@ -8,7 +8,7 @@ import type { OrderItem } from "../types/OrderItem";
 import type { Customer } from "../types/Customer";
 
 interface ProductSaleStat {
-    productId: number;
+    productId: number | string;
     name: string;
     totalQuantity: number;
     totalRevenue: number;
@@ -147,16 +147,17 @@ export default function SalesHistory() {
     }, 0);
 
     // Bảng tổng hợp thống kê mặt hàng bán chạy & lợi nhuận từng món
-    const productStatsMap: Record<number, ProductSaleStat> = {};
+    const productStatsMap: Record<string, ProductSaleStat> = {};
 
     filteredOrders.forEach((order) => {
         order.items.forEach((item) => {
             const cPrice = item.costPrice ?? Math.round(item.price * 0.65);
             const itemCost = item.costSubtotal ?? cPrice * item.quantity;
             const itemProfit = item.profit ?? item.subtotal - itemCost;
+            const pKey = String(item.productId);
 
-            if (!productStatsMap[item.productId]) {
-                productStatsMap[item.productId] = {
+            if (!productStatsMap[pKey]) {
+                productStatsMap[pKey] = {
                     productId: item.productId,
                     name: item.name,
                     totalQuantity: 0,
@@ -166,10 +167,10 @@ export default function SalesHistory() {
                 };
             }
 
-            productStatsMap[item.productId].totalQuantity += item.quantity;
-            productStatsMap[item.productId].totalRevenue += item.subtotal;
-            productStatsMap[item.productId].totalCost += itemCost;
-            productStatsMap[item.productId].totalProfit += itemProfit;
+            productStatsMap[pKey].totalQuantity += item.quantity;
+            productStatsMap[pKey].totalRevenue += item.subtotal;
+            productStatsMap[pKey].totalCost += itemCost;
+            productStatsMap[pKey].totalProfit += itemProfit;
         });
     });
 

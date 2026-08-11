@@ -1,5 +1,5 @@
 export interface OrderItem {
-  productId: number;
+  productId: number | string;
   name: string;
   price: number;       // Giá bán
   costPrice?: number;  // Giá vốn
